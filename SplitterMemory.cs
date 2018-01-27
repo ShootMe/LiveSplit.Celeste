@@ -5,6 +5,8 @@ namespace LiveSplit.Celeste {
 	//.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\SOS.dll
 	public partial class SplitterMemory {
 		private static ProgramPointer Celeste = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "83C604F30F7E06660FD6078BCBFF15????????8D15", 21));
+		private static ProgramPointer AreaData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "8B3D????????3B770C720DB90D0000008D5109E8????????8B47043B70040F83", 2));
+		private static ProgramPointer SaveData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "8B7C90088B432C8B40048D5B6C8B53043B500473368B7490088B15", 27));
 		public Process Program { get; set; }
 		public bool IsHooked { get; set; } = false;
 		private DateTime lastHooked;
@@ -12,10 +14,41 @@ namespace LiveSplit.Celeste {
 		public SplitterMemory() {
 			lastHooked = DateTime.MinValue;
 		}
-		public string CelestePointer() {
-			return Celeste.GetPointer(Program).ToString("X");
+		public string RAMPointers() {
+			return Celeste.GetPointer(Program).ToString("X") + " " + AreaData.GetPointer(Program).ToString("X") + " " + SaveData.GetPointer(Program).ToString("X");
+		}
+		public string LevelName() {
+			//Celeste.scene.MethodTable.TypeSize
+			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
+			if (size == 340) {
+				//((Level)Celeste.scene).session.level
+				return Celeste.Read(Program, 0x0, 0x98, 0x2c, 0x34, 0x0);
+			}
+			return string.Empty;
+		}
+		public Area AreaID() {
+			//Celeste.scene.MethodTable.TypeSize
+			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
+			if (size == 340) {
+				//((Level)Celeste.scene).areaKey.id
+				return (Area)Celeste.Read<int>(Program, 0x0, 0x98, 0x2c, 0x6c);
+			}
+			return Area.Menu;
+		}
+		public AreaMode AreaDifficulty() {
+			//Celeste.scene.MethodTable.TypeSize
+			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
+			if (size == 340) {
+				//((Level)Celeste.scene).areaKey.mode
+				return (AreaMode)Celeste.Read<int>(Program, 0x0, 0x98, 0x2c, 0x70);
+			}
+			return AreaMode.ASide;
 		}
 		public double GameTime() {
+			//SaveData.Instance.Time
+			return (double)SaveData.Read<long>(Program, 0x0, 0x4) / (double)10000000;
+		}
+		public double LevelTime() {
 			//Celeste.scene.MethodTable.TypeSize
 			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
 			if (size == 340) {
@@ -50,6 +83,15 @@ namespace LiveSplit.Celeste {
 				return Celeste.Read<bool>(Program, 0x0, 0x98, 0x2b);
 			}
 			return false;
+		}
+		public Menu MenuType() {
+			//Celeste.scene.MethodTable.TypeSize
+			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
+			if (size == 100) {
+				//((Overworld)Celeste.scene).current.MethodTable.TypeSize
+				return (Menu)Celeste.Read<int>(Program, 0x0, 0x98, 0x30, 0x0, 0x4);
+			}
+			return Menu.InGame;
 		}
 		public bool HookProcess() {
 			IsHooked = Program != null && !Program.HasExited;

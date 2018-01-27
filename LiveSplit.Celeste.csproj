@@ -66,12 +66,33 @@
     <Compile Include="SplitterComponent.cs" />
     <Compile Include="SplitterFactory.cs" />
     <Compile Include="SplitterMemory.cs" />
+    <Compile Include="SplitterObjects.cs" />
+    <Compile Include="SplitterSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SplitterSettings.Designer.cs">
+      <DependentUpon>SplitterSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplitterSplitSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SplitterSplitSettings.Designer.cs">
+      <DependentUpon>SplitterSplitSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="SplitterTest.cs" />
     <Compile Include="MemoryReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Components\Updates.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SplitterSettings.resx">
+      <DependentUpon>SplitterSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplitterSplitSettings.resx">
+      <DependentUpon>SplitterSplitSettings.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

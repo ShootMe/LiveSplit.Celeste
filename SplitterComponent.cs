@@ -14,15 +14,17 @@ namespace LiveSplit.Celeste {
 		public TimerModel Model { get; set; }
 		public IDictionary<string, Action> ContextMenuControls { get { return null; } }
 		private static string LOGFILE = "_Celeste.log";
-		private static string[] keys = { "CurrentSplit", "Pointer", "GameTime", "ShowInputUI", "Completed", "Deaths" };
+		private static string[] keys = { "CurrentSplit", "Pointers", "GameTime", "LevelTime", "ShowInputUI", "Menu", "Completed", "Deaths", "AreaID", "AreaMode", "LevelName" };
 		private Dictionary<string, string> currentValues = new Dictionary<string, string>();
 		private SplitterMemory mem;
-		private int currentSplit = -1, lastLogCheck;
-		private bool hasLog = false, lastShowInputUI, lastCompleted;
-		private double totalElapsed, lastElapsed;
+		private SplitterSettings settings;
+		private int currentSplit = -1, lastLogCheck, elapsedCounter;
+		private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter;
+		private double lastElapsed;
 
 		public SplitterComponent(LiveSplitState state) {
 			mem = new SplitterMemory();
+			settings = new SplitterSettings();
 			foreach (string key in keys) {
 				currentValues[key] = "";
 			}
@@ -56,26 +58,159 @@ namespace LiveSplit.Celeste {
 			if (currentSplit == -1) {
 				bool showInputUI = mem.ShowInputUI();
 
-				shouldSplit = !showInputUI && lastShowInputUI;
+				shouldSplit = !showInputUI && lastShowInputUI && mem.MenuType() == Menu.FileSelect;
 
 				lastShowInputUI = showInputUI;
 			} else {
-				double elapsed = mem.GameTime();
+				double elapsed = settings.ILSplits ? mem.LevelTime() : mem.GameTime();
 
 				if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 					bool completed = mem.LevelCompleted();
 
-					shouldSplit = completed && !lastCompleted;
+					SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
+
+					if (split != null && split.Type != SplitType.Manual) {
+						switch (split.Type) {
+							case SplitType.Prologue:
+							case SplitType.Chapter1:
+							case SplitType.Chapter2:
+							case SplitType.Chapter3:
+							case SplitType.Chapter4:
+							case SplitType.Chapter5:
+							case SplitType.Chapter6:
+							case SplitType.Chapter7:
+							case SplitType.Epilogue:
+							case SplitType.Chapter8:
+								if (!exitingChapter) {
+									exitingChapter = completed && !lastCompleted;
+								} else if (elapsedCounter < 3) {
+									if (elapsed == lastElapsed) {
+										elapsedCounter++;
+									} else {
+										elapsedCounter = 0;
+									}
+								}
+								shouldSplit = elapsedCounter >= 3;
+								break;
+							case SplitType.Chapter1Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.ForsakenCity
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "6" : "04");
+								break;
+							case SplitType.Chapter1Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.ForsakenCity
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "9b" : "08");
+								break;
+							case SplitType.Chapter2Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.OldSite
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "3" : "03");
+								break;
+							case SplitType.Chapter2Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.OldSite
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "end_3" : "08b");
+								break;
+							case SplitType.Chapter3Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.CelestialResort
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "08-a" : "06");
+								break;
+							case SplitType.Chapter3Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.CelestialResort
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "09-d" : "11");
+								break;
+							case SplitType.Chapter3Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.CelestialResort
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00-d" : "16");
+								break;
+							case SplitType.Chapter4Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.GoldenRidge
+									&& mem.LevelName() == "b-00";
+								break;
+							case SplitType.Chapter4Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.GoldenRidge
+									&& mem.LevelName() == "c-00";
+								break;
+							case SplitType.Chapter4Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.GoldenRidge
+									&& mem.LevelName() == "d-00";
+								break;
+							case SplitType.Chapter5Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.MirrorTemple
+									&& mem.LevelName() == "b-00";
+								break;
+							case SplitType.Chapter5Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.MirrorTemple
+									&& mem.LevelName() == "c-00";
+								break;
+							case SplitType.Chapter5Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.MirrorTemple
+									&& mem.LevelName() == "d-00";
+								break;
+							case SplitType.Chapter5Checkpoint4:
+								shouldSplit = mem.AreaID() == Area.MirrorTemple
+									&& mem.LevelName() == "e-00";
+								break;
+							case SplitType.Chapter6Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.Reflection
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00" : "b-00");
+								break;
+							case SplitType.Chapter6Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.Reflection
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "04" : "c-00");
+								break;
+							case SplitType.Chapter6Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.Reflection
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "b-00" : "d-00");
+								break;
+							case SplitType.Chapter6Checkpoint4:
+								shouldSplit = mem.AreaID() == Area.Reflection
+									&& mem.LevelName() == "boss-00";
+								break;
+							case SplitType.Chapter6Checkpoint5:
+								shouldSplit = mem.AreaID() == Area.Reflection
+									&& mem.LevelName() == "after-00";
+								break;
+							case SplitType.Chapter7Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == "b-00";
+								break;
+							case SplitType.Chapter7Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "c-01");
+								break;
+							case SplitType.Chapter7Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == "d-00";
+								break;
+							case SplitType.Chapter7Checkpoint4:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "e-00b" : "e-00");
+								break;
+							case SplitType.Chapter7Checkpoint5:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == "f-00";
+								break;
+							case SplitType.Chapter7Checkpoint6:
+								shouldSplit = mem.AreaID() == Area.TheSummit
+									&& mem.LevelName() == "g-00";
+								break;
+							case SplitType.Chapter8Checkpoint1:
+								shouldSplit = mem.AreaID() == Area.Core
+									&& mem.LevelName() == "a-00";
+								break;
+							case SplitType.Chapter8Checkpoint2:
+								shouldSplit = mem.AreaID() == Area.Core
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00");
+								break;
+							case SplitType.Chapter8Checkpoint3:
+								shouldSplit = mem.AreaID() == Area.Core
+									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01");
+								break;
+						}
+					}
 
 					lastCompleted = completed;
 
-					if (shouldSplit) {
-						totalElapsed += elapsed;
-					}
-
 					if (elapsed > 0 || lastElapsed == elapsed) {
-						double temp = totalElapsed + (lastCompleted ? 0 : elapsed);
-						Model.CurrentState.SetGameTime(TimeSpan.FromSeconds(temp));
+						Model.CurrentState.SetGameTime(TimeSpan.FromSeconds(elapsed));
 					}
 				}
 
@@ -113,11 +248,16 @@ namespace LiveSplit.Celeste {
 
 					switch (key) {
 						case "CurrentSplit": curr = currentSplit.ToString(); break;
-						case "Pointer": curr = mem.CelestePointer(); break;
-						case "GameTime": curr = mem.GameTime().ToString("0.0"); break;
+						case "Pointers": curr = mem.RAMPointers(); break;
+						case "GameTime": curr = mem.GameTime().ToString("0"); break;
+						case "LevelTime": curr = mem.LevelTime().ToString("0"); break;
 						case "ShowInputUI": curr = mem.ShowInputUI().ToString(); break;
 						case "Completed": curr = mem.LevelCompleted().ToString(); break;
 						case "Deaths": curr = mem.Deaths().ToString(); break;
+						case "AreaID": curr = mem.AreaID().ToString(); break;
+						case "AreaMode": curr = mem.AreaDifficulty().ToString(); break;
+						case "LevelName": curr = mem.LevelName(); break;
+						case "Menu": curr = mem.MenuType().ToString(); break;
 						default: curr = string.Empty; break;
 					}
 
@@ -145,6 +285,8 @@ namespace LiveSplit.Celeste {
 		}
 		public void OnReset(object sender, TimerPhase e) {
 			currentSplit = -1;
+			exitingChapter = false;
+			elapsedCounter = 0;
 			Model.CurrentState.IsGameTimePaused = true;
 			WriteLog("---------Reset----------------------------------");
 		}
@@ -161,18 +303,24 @@ namespace LiveSplit.Celeste {
 		}
 		public void OnUndoSplit(object sender, EventArgs e) {
 			currentSplit--;
+			exitingChapter = false;
+			elapsedCounter = 0;
 			WriteLog("---------Undo-----------------------------------");
 		}
 		public void OnSkipSplit(object sender, EventArgs e) {
 			currentSplit++;
+			exitingChapter = false;
+			elapsedCounter = 0;
 			WriteLog("---------Skip-----------------------------------");
 		}
 		public void OnSplit(object sender, EventArgs e) {
 			currentSplit++;
+			exitingChapter = false;
+			elapsedCounter = 0;
 			WriteLog("---------Split-----------------------------------");
 			if (currentSplit == Model.CurrentState.Run.Count) {
 				ISegment segment = Model.CurrentState.Run[currentSplit - 1];
-				segment.SplitTime = new Time(segment.SplitTime.RealTime, TimeSpan.FromSeconds(totalElapsed));
+				segment.SplitTime = new Time(segment.SplitTime.RealTime, TimeSpan.FromSeconds(lastElapsed));
 			}
 		}
 		private void WriteLog(string data) {
@@ -187,9 +335,9 @@ namespace LiveSplit.Celeste {
 			}
 		}
 
-		public Control GetSettingsControl(LayoutMode mode) { return null; }
-		public void SetSettings(XmlNode document) { }
-		public XmlNode GetSettings(XmlDocument document) { return document.CreateElement("Settings"); }
+		public Control GetSettingsControl(LayoutMode mode) { return settings; }
+		public void SetSettings(XmlNode document) { settings.SetSettings(document); }
+		public XmlNode GetSettings(XmlDocument document) { return settings.UpdateSettings(document); }
 		public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion) { }
 		public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion) { }
 		public float HorizontalWidth { get { return 0; } }

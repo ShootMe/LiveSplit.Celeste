@@ -1,5 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.1.0">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Fixed autostart of timer when not on a new File </change>
+			<change> Changed Game Time to use File Time instead of Level Time </change>
+			<change> Added configurable splits in Edit Splits -> Settings </change>
+			<change> Added default splits, Chapter or Chapter + Checkpoints </change>
+			<change> ILs (When you have only one chapter split) will still use Level Time </change>
+		</changelog>
+	</update>
 	<update version="1.0.0">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
