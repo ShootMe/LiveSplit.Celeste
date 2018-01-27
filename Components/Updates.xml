@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.1.1">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Made sure chapter splits only split for their specific chapter </change>
+		</changelog>
+	</update>
 	<update version="1.1.0">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>

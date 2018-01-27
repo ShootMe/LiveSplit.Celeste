@@ -66,144 +66,49 @@ namespace LiveSplit.Celeste {
 
 				if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
 					bool completed = mem.LevelCompleted();
-
+					Area areaID = mem.AreaID();
 					SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
 
 					if (split != null && split.Type != SplitType.Manual) {
 						switch (split.Type) {
-							case SplitType.Prologue:
-							case SplitType.Chapter1:
-							case SplitType.Chapter2:
-							case SplitType.Chapter3:
-							case SplitType.Chapter4:
-							case SplitType.Chapter5:
-							case SplitType.Chapter6:
-							case SplitType.Chapter7:
-							case SplitType.Epilogue:
-							case SplitType.Chapter8:
-								if (!exitingChapter) {
-									exitingChapter = completed && !lastCompleted;
-								} else if (elapsedCounter < 3) {
-									if (elapsed == lastElapsed) {
-										elapsedCounter++;
-									} else {
-										elapsedCounter = 0;
-									}
-								}
-								shouldSplit = elapsedCounter >= 3;
-								break;
-							case SplitType.Chapter1Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.ForsakenCity
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "6" : "04");
-								break;
-							case SplitType.Chapter1Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.ForsakenCity
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "9b" : "08");
-								break;
-							case SplitType.Chapter2Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.OldSite
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "3" : "03");
-								break;
-							case SplitType.Chapter2Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.OldSite
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "end_3" : "08b");
-								break;
-							case SplitType.Chapter3Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.CelestialResort
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "08-a" : "06");
-								break;
-							case SplitType.Chapter3Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.CelestialResort
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "09-d" : "11");
-								break;
-							case SplitType.Chapter3Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.CelestialResort
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00-d" : "16");
-								break;
-							case SplitType.Chapter4Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.GoldenRidge
-									&& mem.LevelName() == "b-00";
-								break;
-							case SplitType.Chapter4Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.GoldenRidge
-									&& mem.LevelName() == "c-00";
-								break;
-							case SplitType.Chapter4Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.GoldenRidge
-									&& mem.LevelName() == "d-00";
-								break;
-							case SplitType.Chapter5Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.MirrorTemple
-									&& mem.LevelName() == "b-00";
-								break;
-							case SplitType.Chapter5Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.MirrorTemple
-									&& mem.LevelName() == "c-00";
-								break;
-							case SplitType.Chapter5Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.MirrorTemple
-									&& mem.LevelName() == "d-00";
-								break;
-							case SplitType.Chapter5Checkpoint4:
-								shouldSplit = mem.AreaID() == Area.MirrorTemple
-									&& mem.LevelName() == "e-00";
-								break;
-							case SplitType.Chapter6Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.Reflection
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00" : "b-00");
-								break;
-							case SplitType.Chapter6Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.Reflection
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "04" : "c-00");
-								break;
-							case SplitType.Chapter6Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.Reflection
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "b-00" : "d-00");
-								break;
-							case SplitType.Chapter6Checkpoint4:
-								shouldSplit = mem.AreaID() == Area.Reflection
-									&& mem.LevelName() == "boss-00";
-								break;
-							case SplitType.Chapter6Checkpoint5:
-								shouldSplit = mem.AreaID() == Area.Reflection
-									&& mem.LevelName() == "after-00";
-								break;
-							case SplitType.Chapter7Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == "b-00";
-								break;
-							case SplitType.Chapter7Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "c-01");
-								break;
-							case SplitType.Chapter7Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == "d-00";
-								break;
-							case SplitType.Chapter7Checkpoint4:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "e-00b" : "e-00");
-								break;
-							case SplitType.Chapter7Checkpoint5:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == "f-00";
-								break;
-							case SplitType.Chapter7Checkpoint6:
-								shouldSplit = mem.AreaID() == Area.TheSummit
-									&& mem.LevelName() == "g-00";
-								break;
-							case SplitType.Chapter8Checkpoint1:
-								shouldSplit = mem.AreaID() == Area.Core
-									&& mem.LevelName() == "a-00";
-								break;
-							case SplitType.Chapter8Checkpoint2:
-								shouldSplit = mem.AreaID() == Area.Core
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00");
-								break;
-							case SplitType.Chapter8Checkpoint3:
-								shouldSplit = mem.AreaID() == Area.Core
-									&& mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01");
-								break;
+							case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, completed, elapsed); break;
+							case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, completed, elapsed); break;
+							case SplitType.Chapter2: shouldSplit = ChapterSplit(areaID, Area.OldSite, completed, elapsed); break;
+							case SplitType.Chapter3: shouldSplit = ChapterSplit(areaID, Area.CelestialResort, completed, elapsed); break;
+							case SplitType.Chapter4: shouldSplit = ChapterSplit(areaID, Area.GoldenRidge, completed, elapsed); break;
+							case SplitType.Chapter5: shouldSplit = ChapterSplit(areaID, Area.MirrorTemple, completed, elapsed); break;
+							case SplitType.Chapter6: shouldSplit = ChapterSplit(areaID, Area.Reflection, completed, elapsed); break;
+							case SplitType.Chapter7: shouldSplit = ChapterSplit(areaID, Area.TheSummit, completed, elapsed); break;
+							case SplitType.Epilogue: shouldSplit = ChapterSplit(areaID, Area.Epilogue, completed, elapsed); break;
+							case SplitType.Chapter8: shouldSplit = ChapterSplit(areaID, Area.Core, completed, elapsed); break;
+							case SplitType.Chapter1Checkpoint1: shouldSplit = areaID == Area.ForsakenCity && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "6" : "04"); break;
+							case SplitType.Chapter1Checkpoint2: shouldSplit = areaID == Area.ForsakenCity && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "9b" : "08"); break;
+							case SplitType.Chapter2Checkpoint1: shouldSplit = areaID == Area.OldSite && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "3" : "03"); break;
+							case SplitType.Chapter2Checkpoint2: shouldSplit = areaID == Area.OldSite && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "end_3" : "08b"); break;
+							case SplitType.Chapter3Checkpoint1: shouldSplit = areaID == Area.CelestialResort && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "08-a" : "06"); break;
+							case SplitType.Chapter3Checkpoint2: shouldSplit = areaID == Area.CelestialResort && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "09-d" : "11"); break;
+							case SplitType.Chapter3Checkpoint3: shouldSplit = areaID == Area.CelestialResort && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00-d" : "16"); break;
+							case SplitType.Chapter4Checkpoint1: shouldSplit = areaID == Area.GoldenRidge && mem.LevelName() == "b-00"; break;
+							case SplitType.Chapter4Checkpoint2: shouldSplit = areaID == Area.GoldenRidge && mem.LevelName() == "c-00"; break;
+							case SplitType.Chapter4Checkpoint3: shouldSplit = areaID == Area.GoldenRidge && mem.LevelName() == "d-00"; break;
+							case SplitType.Chapter5Checkpoint1: shouldSplit = areaID == Area.MirrorTemple && mem.LevelName() == "b-00"; break;
+							case SplitType.Chapter5Checkpoint2: shouldSplit = areaID == Area.MirrorTemple && mem.LevelName() == "c-00"; break;
+							case SplitType.Chapter5Checkpoint3: shouldSplit = areaID == Area.MirrorTemple && mem.LevelName() == "d-00"; break;
+							case SplitType.Chapter5Checkpoint4: shouldSplit = areaID == Area.MirrorTemple && mem.LevelName() == "e-00"; break;
+							case SplitType.Chapter6Checkpoint1: shouldSplit = areaID == Area.Reflection && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "00" : "b-00"); break;
+							case SplitType.Chapter6Checkpoint2: shouldSplit = areaID == Area.Reflection && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "04" : "c-00"); break;
+							case SplitType.Chapter6Checkpoint3: shouldSplit = areaID == Area.Reflection && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "b-00" : "d-00"); break;
+							case SplitType.Chapter6Checkpoint4: shouldSplit = areaID == Area.Reflection && mem.LevelName() == "boss-00"; break;
+							case SplitType.Chapter6Checkpoint5: shouldSplit = areaID == Area.Reflection && mem.LevelName() == "after-00"; break;
+							case SplitType.Chapter7Checkpoint1: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == "b-00"; break;
+							case SplitType.Chapter7Checkpoint2: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "c-01"); break;
+							case SplitType.Chapter7Checkpoint3: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == "d-00"; break;
+							case SplitType.Chapter7Checkpoint4: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "e-00b" : "e-00"); break;
+							case SplitType.Chapter7Checkpoint5: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == "f-00"; break;
+							case SplitType.Chapter7Checkpoint6: shouldSplit = areaID == Area.TheSummit && mem.LevelName() == "g-00"; break;
+							case SplitType.Chapter8Checkpoint1: shouldSplit = areaID == Area.Core && mem.LevelName() == "a-00"; break;
+							case SplitType.Chapter8Checkpoint2: shouldSplit = areaID == Area.Core && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00"); break;
+							case SplitType.Chapter8Checkpoint3: shouldSplit = areaID == Area.Core && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01"); break;
 						}
 					}
 
@@ -220,6 +125,18 @@ namespace LiveSplit.Celeste {
 			}
 
 			HandleSplit(shouldSplit, false);
+		}
+		private bool ChapterSplit(Area areaID, Area chapterArea, bool completed, double elapsed) {
+			if (!exitingChapter) {
+				exitingChapter = areaID == chapterArea && completed && !lastCompleted;
+			} else if (elapsedCounter < 3) {
+				if (elapsed == lastElapsed) {
+					elapsedCounter++;
+				} else {
+					elapsedCounter = 0;
+				}
+			}
+			return elapsedCounter >= 3;
 		}
 		private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
 			if (shouldReset) {
