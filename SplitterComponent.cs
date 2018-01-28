@@ -14,18 +14,17 @@ namespace LiveSplit.Celeste {
 		public TimerModel Model { get; set; }
 		public IDictionary<string, Action> ContextMenuControls { get { return null; } }
 		private static string LOGFILE = "_Celeste.log";
-		private static string[] keys = { "CurrentSplit", "Pointers", "GameTime", "LevelTime", "ShowInputUI", "Menu", "Completed", "Deaths", "AreaID", "AreaMode", "LevelName" };
-		private Dictionary<string, string> currentValues = new Dictionary<string, string>();
+		private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
 		private SplitterMemory mem;
 		private SplitterSettings settings;
-		private int currentSplit = -1, lastLogCheck, elapsedCounter;
+		private int currentSplit = -1, lastLogCheck, elapsedCounter, lastHeartGems, lastCassettes;
 		private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter;
 		private double lastElapsed;
 
 		public SplitterComponent(LiveSplitState state) {
 			mem = new SplitterMemory();
 			settings = new SplitterSettings();
-			foreach (string key in keys) {
+			foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
 				currentValues[key] = "";
 			}
 
@@ -56,11 +55,19 @@ namespace LiveSplit.Celeste {
 			bool shouldSplit = false;
 
 			if (currentSplit == -1) {
-				bool showInputUI = mem.ShowInputUI();
+				if (!settings.ILSplits) {
+					bool showInputUI = mem.ShowInputUI();
 
-				shouldSplit = !showInputUI && lastShowInputUI && mem.MenuType() == Menu.FileSelect;
+					shouldSplit = !showInputUI && lastShowInputUI && mem.MenuType() == Menu.FileSelect;
 
-				lastShowInputUI = showInputUI;
+					lastShowInputUI = showInputUI;
+				} else {
+					double elapsed = mem.LevelTime();
+
+					shouldSplit = mem.MenuType() == Menu.InGame && elapsed > 0 && elapsed < 0.5 && lastElapsed == 0;
+
+					lastElapsed = elapsed;
+				}
 			} else {
 				double elapsed = settings.ILSplits ? mem.LevelTime() : mem.GameTime();
 
@@ -109,6 +116,30 @@ namespace LiveSplit.Celeste {
 							case SplitType.Chapter8Checkpoint1: shouldSplit = areaID == Area.Core && mem.LevelName() == "a-00"; break;
 							case SplitType.Chapter8Checkpoint2: shouldSplit = areaID == Area.Core && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00"); break;
 							case SplitType.Chapter8Checkpoint3: shouldSplit = areaID == Area.Core && mem.LevelName() == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01"); break;
+							default:
+								int cassettes = mem.Cassettes();
+								int heartGems = mem.HeartGems();
+								switch (split.Type) {
+									case SplitType.Chapter1Cassette: shouldSplit = areaID == Area.ForsakenCity && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter1HeartGem: shouldSplit = areaID == Area.ForsakenCity && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter2Cassette: shouldSplit = areaID == Area.OldSite && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter2HeartGem: shouldSplit = areaID == Area.OldSite && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter3Cassette: shouldSplit = areaID == Area.CelestialResort && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter3HeartGem: shouldSplit = areaID == Area.CelestialResort && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter4Cassette: shouldSplit = areaID == Area.GoldenRidge && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter4HeartGem: shouldSplit = areaID == Area.GoldenRidge && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter5Cassette: shouldSplit = areaID == Area.MirrorTemple && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter5HeartGem: shouldSplit = areaID == Area.MirrorTemple && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter6Cassette: shouldSplit = areaID == Area.Reflection && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter6HeartGem: shouldSplit = areaID == Area.Reflection && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter7Cassette: shouldSplit = areaID == Area.TheSummit && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter7HeartGem: shouldSplit = areaID == Area.TheSummit && heartGems == lastHeartGems + 1; break;
+									case SplitType.Chapter8Cassette: shouldSplit = areaID == Area.Core && cassettes == lastCassettes + 1; break;
+									case SplitType.Chapter8HeartGem: shouldSplit = areaID == Area.Core && heartGems == lastHeartGems + 1; break;
+								}
+								lastCassettes = cassettes;
+								lastHeartGems = heartGems;
+								break;
 						}
 					}
 
@@ -155,33 +186,40 @@ namespace LiveSplit.Celeste {
 			if (lastLogCheck == 0) {
 				hasLog = File.Exists(LOGFILE);
 				lastLogCheck = 300;
+
+				if (Model == null && !mem.DebugMenuEnabled()) {
+					mem.DebugMenu(true);
+				}
 			}
 			lastLogCheck--;
 
 			if (hasLog || !Console.IsOutputRedirected) {
 				string prev = string.Empty, curr = string.Empty;
-				foreach (string key in keys) {
+				foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
 					prev = currentValues[key];
 
 					switch (key) {
-						case "CurrentSplit": curr = currentSplit.ToString(); break;
-						case "Pointers": curr = mem.RAMPointers(); break;
-						case "GameTime": curr = mem.GameTime().ToString("0"); break;
-						case "LevelTime": curr = mem.LevelTime().ToString("0"); break;
-						case "ShowInputUI": curr = mem.ShowInputUI().ToString(); break;
-						case "Completed": curr = mem.LevelCompleted().ToString(); break;
-						case "Deaths": curr = mem.Deaths().ToString(); break;
-						case "AreaID": curr = mem.AreaID().ToString(); break;
-						case "AreaMode": curr = mem.AreaDifficulty().ToString(); break;
-						case "LevelName": curr = mem.LevelName(); break;
-						case "Menu": curr = mem.MenuType().ToString(); break;
+						case LogObject.CurrentSplit: curr = currentSplit.ToString(); break;
+						case LogObject.Pointers: curr = mem.RAMPointers(); break;
+						case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
+						case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
+						case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
+						case LogObject.Completed: curr = mem.LevelCompleted().ToString(); break;
+						case LogObject.Deaths: curr = mem.Deaths().ToString(); break;
+						case LogObject.AreaID: curr = mem.AreaID().ToString(); break;
+						case LogObject.AreaMode: curr = mem.AreaDifficulty().ToString(); break;
+						case LogObject.LevelName: curr = mem.LevelName(); break;
+						case LogObject.Menu: curr = mem.MenuType().ToString(); break;
+						case LogObject.Strawberries: curr = mem.Strawberries().ToString(); break;
+						case LogObject.Cassettes: curr = mem.Cassettes().ToString(); break;
+						case LogObject.HeartGems: curr = mem.HeartGems().ToString(); break;
 						default: curr = string.Empty; break;
 					}
 
 					if (string.IsNullOrEmpty(prev)) { prev = string.Empty; }
 					if (string.IsNullOrEmpty(curr)) { curr = string.Empty; }
 					if (!prev.Equals(curr)) {
-						WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key + ": ".PadRight(16 - key.Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
+						WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key.ToString() + ": ".PadRight(16 - key.ToString().Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
 
 						currentValues[key] = curr;
 					}

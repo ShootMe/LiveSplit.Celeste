@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProgramPointer.cs" />
     <Compile Include="SplitterComponent.cs" />
     <Compile Include="SplitterFactory.cs" />
     <Compile Include="SplitterMemory.cs" />

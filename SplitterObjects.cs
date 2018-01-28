@@ -1,6 +1,22 @@
 ﻿using System;
 using System.ComponentModel;
 namespace LiveSplit.Celeste {
+	public enum LogObject {
+		CurrentSplit,
+		Pointers,
+		GameTime,
+		LevelTime,
+		ShowInputUI,
+		Menu,
+		Completed,
+		Deaths,
+		AreaID,
+		AreaMode,
+		LevelName,
+		Strawberries,
+		HeartGems,
+		Cassettes
+	}
 	public enum Area {
 		Menu = -1,
 		Prologue = 0,
@@ -107,6 +123,38 @@ namespace LiveSplit.Celeste {
 		Chapter8Checkpoint3,
 		[Description("Chapter 8 - Core (Complete)")]
 		Chapter8,
+		[Description("Chapter 1 - Cassette (Pickup)")]
+		Chapter1Cassette,
+		[Description("Chapter 1 - Heart Gem (Pickup)")]
+		Chapter1HeartGem,
+		[Description("Chapter 2 - Cassette (Pickup)")]
+		Chapter2Cassette,
+		[Description("Chapter 2 - Heart Gem (Pickup)")]
+		Chapter2HeartGem,
+		[Description("Chapter 3 - Cassette (Pickup)")]
+		Chapter3Cassette,
+		[Description("Chapter 3 - Heart Gem (Pickup)")]
+		Chapter3HeartGem,
+		[Description("Chapter 4 - Cassette (Pickup)")]
+		Chapter4Cassette,
+		[Description("Chapter 4 - Heart Gem (Pickup)")]
+		Chapter4HeartGem,
+		[Description("Chapter 5 - Cassette (Pickup)")]
+		Chapter5Cassette,
+		[Description("Chapter 5 - Heart Gem (Pickup)")]
+		Chapter5HeartGem,
+		[Description("Chapter 6 - Cassette (Pickup)")]
+		Chapter6Cassette,
+		[Description("Chapter 6 - Heart Gem (Pickup)")]
+		Chapter6HeartGem,
+		[Description("Chapter 7 - Cassette (Pickup)")]
+		Chapter7Cassette,
+		[Description("Chapter 7 - Heart Gem (Pickup)")]
+		Chapter7HeartGem,
+		[Description("Chapter 8 - Cassette (Pickup)")]
+		Chapter8Cassette,
+		[Description("Chapter 8 - Heart Gem (Pickup)")]
+		Chapter8HeartGem,
 	}
 	public class SplitInfo {
 		public SplitType Type { get; set; }

@@ -1,5 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.1.2">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Added splits for Heart Gem and Cassette pickups </change>
+			<change> Fixed autostart for ILs </change>
+			<change> Cleaned up the pointer code </change>
+		</changelog>
+	</update>
 	<update version="1.1.1">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
