@@ -1,4 +1,5 @@
-﻿using LiveSplit.Model;
+﻿#if !DebugInfo
+using LiveSplit.Model;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using System;
@@ -62,17 +63,17 @@ namespace LiveSplit.Celeste {
 
 					lastShowInputUI = showInputUI;
 				} else {
-					double elapsed = mem.LevelTime();
+					bool chapterStarted = mem.ChapterStarted();
 
-					shouldSplit = mem.MenuType() == Menu.InGame && elapsed > 0 && elapsed < 0.5 && lastElapsed == 0;
+					shouldSplit = chapterStarted && !lastShowInputUI;
 
-					lastElapsed = elapsed;
+					lastShowInputUI = chapterStarted;
 				}
 			} else {
 				double elapsed = settings.ILSplits ? mem.LevelTime() : mem.GameTime();
 
 				if (Model.CurrentState.CurrentPhase == TimerPhase.Running) {
-					bool completed = mem.LevelCompleted();
+					bool completed = mem.ChapterCompleted();
 					Area areaID = mem.AreaID();
 					SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
 
@@ -186,10 +187,6 @@ namespace LiveSplit.Celeste {
 			if (lastLogCheck == 0) {
 				hasLog = File.Exists(LOGFILE);
 				lastLogCheck = 300;
-
-				if (Model == null && !mem.DebugMenuEnabled()) {
-					mem.DebugMenu(true);
-				}
 			}
 			lastLogCheck--;
 
@@ -204,7 +201,8 @@ namespace LiveSplit.Celeste {
 						case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
 						case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
 						case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
-						case LogObject.Completed: curr = mem.LevelCompleted().ToString(); break;
+						case LogObject.Started: curr = mem.ChapterStarted().ToString(); break;
+						case LogObject.Completed: curr = mem.ChapterCompleted().ToString(); break;
 						case LogObject.Deaths: curr = mem.Deaths().ToString(); break;
 						case LogObject.AreaID: curr = mem.AreaID().ToString(); break;
 						case LogObject.AreaMode: curr = mem.AreaDifficulty().ToString(); break;
@@ -306,3 +304,4 @@ namespace LiveSplit.Celeste {
 		public void Dispose() { }
 	}
 }
+#endif

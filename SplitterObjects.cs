@@ -9,6 +9,7 @@ namespace LiveSplit.Celeste {
 		ShowInputUI,
 		Menu,
 		Completed,
+		Started,
 		Deaths,
 		AreaID,
 		AreaMode,

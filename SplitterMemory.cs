@@ -17,37 +17,40 @@ namespace LiveSplit.Celeste {
 		public string RAMPointers() {
 			return Celeste.GetPointer(Program).ToString("X") + " " + SaveData.GetPointer(Program).ToString("X");
 		}
-		public void DebugMenu(bool enabled) {
-			//Celeste.Commands.Enabled
-			Celeste.Write<bool>(Program, enabled, 0x8, 0x30);
+		public bool ChapterCompleted() {
+			//Celeste.Instance.AutosplitterInfo.ChapterComplete
+			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x11);
 		}
-		public bool DebugMenuEnabled() {
-			//Celeste.Commands.Enabled
-			return Celeste.Read<bool>(Program, 0x8, 0x30);
+		public string LevelName() {
+			//Celeste.Instance.AutosplitterInfo.Level
+			return Celeste.Read(Program, 0x0, 0xac, 0x4, 0x0);
 		}
-		public bool LevelCompleted() {
-			//Celeste.scene.MethodTable.TypeSize
-			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
-			if (size == 340) {
-				//((Level)Celeste.scene).Completed
-				return Celeste.Read<bool>(Program, 0x0, 0x98, 0x2a);
-			}
-			return false;
+		public Area AreaID() {
+			//Celeste.Instance.AutosplitterInfo.Chapter
+			return (Area)Celeste.Read<int>(Program, 0x0, 0xac, 0x8);
+		}
+		public AreaMode AreaDifficulty() {
+			//Celeste.Instance.AutosplitterInfo.Mode
+			return (AreaMode)SaveData.Read<int>(Program, 0x0, 0xac, 0xc);
+		}
+		public bool ChapterStarted() {
+			//Celeste.Instance.AutosplitterInfo.ChapterStarted
+			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x10);
 		}
 		public bool ShowInputUI() {
-			//Celeste.scene.MethodTable.TypeSize
+			//Celeste.Instance.scene.MethodTable.TypeSize
 			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
 			if (size == 100) {
-				//((Overworld)Celeste.scene).showInputUI
+				//((Overworld)Celeste.Instance.scene).showInputUI
 				return Celeste.Read<bool>(Program, 0x0, 0x98, 0x2b);
 			}
 			return false;
 		}
 		public Menu MenuType() {
-			//Celeste.scene.MethodTable.TypeSize
+			//Celeste.Instance.scene.MethodTable.TypeSize
 			int size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
 			if (size == 100) {
-				//((Overworld)Celeste.scene).current.MethodTable.TypeSize
+				//((Overworld)Celeste.Instance.scene).current.MethodTable.TypeSize
 				return (Menu)Celeste.Read<int>(Program, 0x0, 0x98, 0x30, 0x0, 0x4);
 			}
 			return Menu.InGame;
@@ -67,14 +70,6 @@ namespace LiveSplit.Celeste {
 		public double LevelTime() {
 			//SaveData.Instance.CurrentSession.Time
 			return (double)SaveData.Read<long>(Program, 0x0, 0x24, 0x4) / (double)10000000;
-		}
-		public Area AreaID() {
-			//SaveData.Instance.CurrentSession.Area.ID
-			return (Area)SaveData.Read<int>(Program, 0x0, 0x24, 0x6c);
-		}
-		public AreaMode AreaDifficulty() {
-			//SaveData.Instance.CurrentSession.Area.ID
-			return (AreaMode)SaveData.Read<int>(Program, 0x0, 0x24, 0x70);
 		}
 		public int Cassettes() {
 			//SaveData.Instance.Areas.Size
@@ -102,10 +97,6 @@ namespace LiveSplit.Celeste {
 				}
 			}
 			return count;
-		}
-		public string LevelName() {
-			//SaveData.Instance.CurrentSession.Level
-			return SaveData.Read(Program, 0x0, 0x24, 0x34, 0x0);
 		}
 		public bool HookProcess() {
 			IsHooked = Program != null && !Program.HasExited;
