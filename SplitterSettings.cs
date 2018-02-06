@@ -133,7 +133,6 @@ namespace LiveSplit.Celeste {
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter5 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter6 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
-			Splits.Add(new SplitInfo() { Type = SplitType.Epilogue });
 
 			LoadSettings();
 		}
@@ -176,7 +175,6 @@ namespace LiveSplit.Celeste {
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7Checkpoint5 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7Checkpoint6 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
-			Splits.Add(new SplitInfo() { Type = SplitType.Epilogue });
 
 			LoadSettings();
 		}
