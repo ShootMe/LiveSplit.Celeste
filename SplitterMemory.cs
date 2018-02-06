@@ -18,24 +18,49 @@ namespace LiveSplit.Celeste {
 			return Celeste.GetPointer(Program).ToString("X") + " " + SaveData.GetPointer(Program).ToString("X");
 		}
 		public bool ChapterCompleted() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
 			//Celeste.Instance.AutosplitterInfo.ChapterComplete
-			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x11);
+			if (minor == 1 && build == 6) {
+				return Celeste.Read<bool>(Program, 0x0, 0xac, 0x11);
+			}
+			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x32);
 		}
 		public string LevelName() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
 			//Celeste.Instance.AutosplitterInfo.Level
-			return Celeste.Read(Program, 0x0, 0xac, 0x4, 0x0);
+			if (minor == 1 && build == 6) {
+				return Celeste.Read(Program, 0x0, 0xac, 0x4, 0x0);
+			}
+			return Celeste.Read(Program, 0x0, 0xac, 0x14, 0x0);
 		}
 		public Area AreaID() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
 			//Celeste.Instance.AutosplitterInfo.Chapter
-			return (Area)Celeste.Read<int>(Program, 0x0, 0xac, 0x8);
+			if (minor == 1 && build == 6) {
+				return (Area)Celeste.Read<int>(Program, 0x0, 0xac, 0x8);
+			}
+			return (Area)Celeste.Read<int>(Program, 0x0, 0xac, 0x18);
 		}
 		public AreaMode AreaDifficulty() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
 			//Celeste.Instance.AutosplitterInfo.Mode
-			return (AreaMode)SaveData.Read<int>(Program, 0x0, 0xac, 0xc);
+			if (minor == 1 && build == 6) {
+				return (AreaMode)SaveData.Read<int>(Program, 0x0, 0xac, 0xc);
+			}
+			return (AreaMode)SaveData.Read<int>(Program, 0x0, 0xac, 0x1c);
 		}
 		public bool ChapterStarted() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
 			//Celeste.Instance.AutosplitterInfo.ChapterStarted
-			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x10);
+			if (minor == 1 && build == 6) {
+				return Celeste.Read<bool>(Program, 0x0, 0xac, 0x10);
+			}
+			return Celeste.Read<bool>(Program, 0x0, 0xac, 0x31);
 		}
 		public bool ShowInputUI() {
 			//Celeste.Instance.scene.MethodTable.TypeSize
@@ -56,47 +81,77 @@ namespace LiveSplit.Celeste {
 			return Menu.InGame;
 		}
 		public double GameTime() {
-			//SaveData.Instance.Time
-			return (double)SaveData.Read<long>(Program, 0x0, 0x4) / (double)10000000;
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
+			if (minor == 1 && build == 6) {
+				//SaveData.Instance.Time
+				return (double)SaveData.Read<long>(Program, 0x0, 0x4) / (double)10000000;
+			}
+			//Celeste.Instance.AutosplitterInfo.FileTime
+			return (double)Celeste.Read<long>(Program, 0x0, 0xac, 0xc) / (double)10000000;
 		}
 		public int Strawberries() {
-			//SaveData.Instance.TotalStrawberries
-			return SaveData.Read<int>(Program, 0x0, 0x34);
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
+			if (minor == 1 && build == 6) {
+				//SaveData.Instance.TotalStrawberries
+				return SaveData.Read<int>(Program, 0x0, 0x34);
+			}
+			//Celeste.Instance.AutosplitterInfo.FileStrawberries
+			return Celeste.Read<int>(Program, 0x0, 0xac, 0x24);
 		}
 		public int Deaths() {
 			//SaveData.Instance.TotalDeaths
 			return SaveData.Read<int>(Program, 0x0, 0x30);
 		}
 		public double LevelTime() {
-			//SaveData.Instance.CurrentSession.Time
-			return (double)SaveData.Read<long>(Program, 0x0, 0x24, 0x4) / (double)10000000;
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
+			if (minor == 1 && build == 6) {
+				//SaveData.Instance.CurrentSession.Time
+				return (double)SaveData.Read<long>(Program, 0x0, 0x24, 0x4) / (double)10000000;
+			}
+			//Celeste.Instance.AutosplitterInfo.ChapterTime
+			return (double)Celeste.Read<long>(Program, 0x0, 0xac, 0x4) / (double)10000000;
 		}
 		public int Cassettes() {
-			//SaveData.Instance.Areas.Size
-			int size = SaveData.Read<int>(Program, 0x0, 0x28, 0xc);
-			int count = 0;
-			for (int i = 0; i < size; i++) {
-				//SaveData.Instance.Areas[i].Cassette
-				if (SaveData.Read<bool>(Program, 0x0, 0x28, 0x4, 0x8 + (i * 4), 0xc)) {
-					count++;
-				}
-			}
-			return count;
-		}
-		public int HeartGems() {
-			//SaveData.Instance.Areas.Size
-			int size = SaveData.Read<int>(Program, 0x0, 0x28, 0xc);
-			int count = 0;
-			for (int i = 0; i < size; i++) {
-				IntPtr area = (IntPtr)SaveData.Read<uint>(Program, 0x0, 0x28, 0x4, 0x8 + (i * 4), 0x4);
-				for (int j = 0; j < 3; j++) {
-					//SaveData.Instance.Areas[i].Modes[j].HeartGem
-					if (Program.Read<bool>(area, 0x8 + (j * 4), 0x36)) {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
+			if (minor == 1 && build == 6) {
+				//SaveData.Instance.Areas.Size
+				int size = SaveData.Read<int>(Program, 0x0, 0x28, 0xc);
+				int count = 0;
+				for (int i = 0; i < size; i++) {
+					//SaveData.Instance.Areas[i].Cassette
+					if (SaveData.Read<bool>(Program, 0x0, 0x28, 0x4, 0x8 + (i * 4), 0xc)) {
 						count++;
 					}
 				}
+				return count;
 			}
-			return count;
+			//Celeste.Instance.AutosplitterInfo.FileCassettes
+			return Celeste.Read<int>(Program, 0x0, 0xac, 0x28);
+		}
+		public int HeartGems() {
+			int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
+			int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
+			if (minor == 1 && build == 6) {
+				//SaveData.Instance.Areas.Size
+				int size = SaveData.Read<int>(Program, 0x0, 0x28, 0xc);
+				int count = 0;
+				for (int i = 0; i < size; i++) {
+					IntPtr area = (IntPtr)SaveData.Read<uint>(Program, 0x0, 0x28, 0x4, 0x8 + (i * 4), 0x4);
+					for (int j = 0; j < 3; j++) {
+						//SaveData.Instance.Areas[i].Modes[j].HeartGem
+						if (Program.Read<bool>(area, 0x8 + (j * 4), 0x36)) {
+							count++;
+						}
+					}
+				}
+				return count;
+			}
+			//Celeste.Instance.AutosplitterInfo.FileHearts
+			return Celeste.Read<int>(Program, 0x0, 0xac, 0x2c);
 		}
 		public bool HookProcess() {
 			IsHooked = Program != null && !Program.HasExited;
