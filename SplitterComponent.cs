@@ -203,7 +203,6 @@ namespace LiveSplit.Celeste {
 						case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
 						case LogObject.Started: curr = mem.ChapterStarted().ToString(); break;
 						case LogObject.Completed: curr = mem.ChapterCompleted().ToString(); break;
-						case LogObject.Deaths: curr = mem.Deaths().ToString(); break;
 						case LogObject.AreaID: curr = mem.AreaID().ToString(); break;
 						case LogObject.AreaMode: curr = mem.AreaDifficulty().ToString(); break;
 						case LogObject.LevelName: curr = mem.LevelName(); break;
