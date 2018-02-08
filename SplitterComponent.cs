@@ -160,7 +160,8 @@ namespace LiveSplit.Celeste {
 		}
 		private bool ChapterSplit(Area areaID, Area chapterArea, bool completed, double elapsed) {
 			if (!exitingChapter) {
-				exitingChapter = areaID == chapterArea && completed && !lastCompleted;
+				string levelName = chapterArea == Area.TheSummit ? mem.LevelName() : null;
+				exitingChapter = areaID == chapterArea && completed && !lastCompleted && (chapterArea != Area.TheSummit || (!string.IsNullOrEmpty(levelName) && !levelName.StartsWith("credits", StringComparison.OrdinalIgnoreCase)));
 			} else if (elapsedCounter < 3) {
 				if (elapsed == lastElapsed) {
 					elapsedCounter++;
