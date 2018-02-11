@@ -18,7 +18,7 @@ namespace LiveSplit.Celeste {
 		private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
 		private SplitterMemory mem;
 		private SplitterSettings settings;
-		private int currentSplit = -1, lastLogCheck, elapsedCounter, lastHeartGems, lastCassettes;
+		private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
 		private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter;
 		private double lastElapsed;
 
@@ -162,14 +162,9 @@ namespace LiveSplit.Celeste {
 			if (!exitingChapter) {
 				string levelName = chapterArea == Area.TheSummit ? mem.LevelName() : null;
 				exitingChapter = areaID == chapterArea && completed && !lastCompleted && (chapterArea != Area.TheSummit || (!string.IsNullOrEmpty(levelName) && !levelName.StartsWith("credits", StringComparison.OrdinalIgnoreCase)));
-			} else if (elapsedCounter < 3) {
-				if (elapsed == lastElapsed) {
-					elapsedCounter++;
-				} else {
-					elapsedCounter = 0;
-				}
+				return false;
 			}
-			return elapsedCounter >= 3;
+			return !completed && lastCompleted;
 		}
 		private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
 			if (shouldReset) {
@@ -239,7 +234,6 @@ namespace LiveSplit.Celeste {
 		public void OnReset(object sender, TimerPhase e) {
 			currentSplit = -1;
 			exitingChapter = false;
-			elapsedCounter = 0;
 			Model.CurrentState.IsGameTimePaused = true;
 			WriteLog("---------Reset----------------------------------");
 		}
@@ -257,19 +251,16 @@ namespace LiveSplit.Celeste {
 		public void OnUndoSplit(object sender, EventArgs e) {
 			currentSplit--;
 			exitingChapter = false;
-			elapsedCounter = 0;
 			WriteLog("---------Undo-----------------------------------");
 		}
 		public void OnSkipSplit(object sender, EventArgs e) {
 			currentSplit++;
 			exitingChapter = false;
-			elapsedCounter = 0;
 			WriteLog("---------Skip-----------------------------------");
 		}
 		public void OnSplit(object sender, EventArgs e) {
 			currentSplit++;
 			exitingChapter = false;
-			elapsedCounter = 0;
 			WriteLog("---------Split-----------------------------------");
 			if (currentSplit == Model.CurrentState.Run.Count) {
 				ISegment segment = Model.CurrentState.Run[currentSplit - 1];
