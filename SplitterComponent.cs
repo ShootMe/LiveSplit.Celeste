@@ -162,7 +162,7 @@ namespace LiveSplit.Celeste {
 			if (!exitingChapter) {
 				string levelName = chapterArea == Area.TheSummit ? mem.LevelName() : null;
 				exitingChapter = areaID == chapterArea && completed && !lastCompleted && (chapterArea != Area.TheSummit || (!string.IsNullOrEmpty(levelName) && !levelName.StartsWith("credits", StringComparison.OrdinalIgnoreCase)));
-				return settings.ILSplits;
+				return exitingChapter && settings.ILSplits;
 			}
 			return !completed && lastCompleted;
 		}
