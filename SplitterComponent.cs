@@ -156,13 +156,13 @@ namespace LiveSplit.Celeste {
 				lastElapsed = elapsed;
 			}
 
-			HandleSplit(shouldSplit, false);
+			HandleSplit(shouldSplit, settings.ILSplits && mem.AreaID() == Area.Menu);
 		}
 		private bool ChapterSplit(Area areaID, Area chapterArea, bool completed, double elapsed) {
 			if (!exitingChapter) {
 				string levelName = chapterArea == Area.TheSummit ? mem.LevelName() : null;
 				exitingChapter = areaID == chapterArea && completed && !lastCompleted && (chapterArea != Area.TheSummit || (!string.IsNullOrEmpty(levelName) && !levelName.StartsWith("credits", StringComparison.OrdinalIgnoreCase)));
-				return false;
+				return settings.ILSplits;
 			}
 			return !completed && lastCompleted;
 		}
