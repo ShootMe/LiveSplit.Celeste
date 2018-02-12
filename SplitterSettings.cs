@@ -78,7 +78,7 @@ namespace LiveSplit.Celeste {
 						Splits.Add(new SplitInfo() {
 							Type = type
 						});
-						if (type.ToString().IndexOf("Checkpoint", StringComparison.OrdinalIgnoreCase) < 0) {
+						if (type.ToString().Length == 8) {
 							chapterCount++;
 						}
 					}
@@ -102,12 +102,18 @@ namespace LiveSplit.Celeste {
 			return xmlSettings;
 		}
 		public void SetSettings(XmlNode settings) {
+			int chapterCount = 0;
 			Splits.Clear();
 			XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
 			foreach (XmlNode splitNode in splitNodes) {
 				string splitDescription = splitNode.InnerText;
-				Splits.Add(new SplitInfo(splitDescription));
+				SplitInfo split = new SplitInfo(splitDescription);
+				Splits.Add(split);
+				if (split.Type.ToString().Length == 8) {
+					chapterCount++;
+				}
 			}
+			ILSplits = chapterCount == 1;
 		}
 		private void btnAddSplit_Click(object sender, EventArgs e) {
 			SplitterSplitSettings setting = new SplitterSplitSettings();
@@ -175,6 +181,39 @@ namespace LiveSplit.Celeste {
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7Checkpoint5 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7Checkpoint6 });
 			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
+
+			LoadSettings();
+		}
+		private void btnABCSides_Click(object sender, EventArgs e) {
+			if (Splits.Count > 0 && MessageBox.Show(this, "You already have some splits setup. This will clear anything you have and default in the Chapter and Checkpoint splits.\r\n\r\nAre you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) {
+				return;
+			}
+
+			Splits.Clear();
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter1 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter1 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter2 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter2 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter3 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter3 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter4 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter4 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter5 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter5 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter6 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter6 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter8 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter8 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter1 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter2 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter3 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter4 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter5 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter6 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter7 });
+			Splits.Add(new SplitInfo() { Type = SplitType.Chapter8 });
 
 			LoadSettings();
 		}
