@@ -221,14 +221,6 @@ namespace LiveSplit.Celeste {
 		}
 
 		public void Update(IInvalidator invalidator, LiveSplitState lvstate, float width, float height, LayoutMode mode) {
-			IList<ILayoutComponent> components = lvstate.Layout.LayoutComponents;
-			for (int i = components.Count - 1; i >= 0; i--) {
-				ILayoutComponent component = components[i];
-				if (component.Component is SplitterComponent && invalidator == null && width == 0 && height == 0) {
-					components.Remove(component);
-				}
-			}
-
 			GetValues();
 		}
 		public void OnReset(object sender, TimerPhase e) {
@@ -247,6 +239,10 @@ namespace LiveSplit.Celeste {
 			currentSplit = 0;
 			Model.CurrentState.IsGameTimePaused = true;
 			WriteLog("---------New Game " + Assembly.GetExecutingAssembly().GetName().Version.ToString(3) + "-------------------------");
+			SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
+			if (split != null) {
+				WriteLog("---------" + split.Type.ToString());
+			}
 		}
 		public void OnUndoSplit(object sender, EventArgs e) {
 			currentSplit--;
@@ -265,6 +261,11 @@ namespace LiveSplit.Celeste {
 			if (currentSplit == Model.CurrentState.Run.Count) {
 				ISegment segment = Model.CurrentState.Run[currentSplit - 1];
 				segment.SplitTime = new Time(segment.SplitTime.RealTime, TimeSpan.FromSeconds(lastElapsed));
+			} else {
+				SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
+				if (split != null) {
+					WriteLog("---------" + split.Type.ToString());
+				}
 			}
 		}
 		private void WriteLog(string data) {
