@@ -4,7 +4,8 @@ using System.Diagnostics;
 namespace LiveSplit.Celeste {
 	public enum PointerVersion {
 		XNA,
-		OpenGL
+		OpenGL,
+		Itch
 	}
 	public enum AutoDeref {
 		None,
