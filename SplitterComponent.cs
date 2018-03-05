@@ -194,6 +194,7 @@ namespace LiveSplit.Celeste {
 					switch (key) {
 						case LogObject.CurrentSplit: curr = currentSplit.ToString(); break;
 						case LogObject.Pointers: curr = mem.RAMPointers(); break;
+						case LogObject.PointerVersion: curr = mem.RAMPointerVersion(); break;
 						case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
 						case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
 						case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;

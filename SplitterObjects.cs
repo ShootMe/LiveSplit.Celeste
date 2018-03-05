@@ -4,6 +4,7 @@ namespace LiveSplit.Celeste {
 	public enum LogObject {
 		CurrentSplit,
 		Pointers,
+		PointerVersion,
 		GameTime,
 		LevelTime,
 		ShowInputUI,
