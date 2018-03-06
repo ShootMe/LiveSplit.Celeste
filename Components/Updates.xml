@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.2.2">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Add ability to split on individual level names </change>
+		</changelog>
+	</update>
 	<update version="1.2.1">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>

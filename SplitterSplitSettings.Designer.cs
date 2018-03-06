@@ -29,6 +29,7 @@
 			this.ToolTips = new System.Windows.Forms.ToolTip(this.components);
 			this.picHandle = new System.Windows.Forms.PictureBox();
 			this.cboType = new System.Windows.Forms.ComboBox();
+			this.txtLevel = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.picHandle)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -64,11 +65,20 @@
 			this.cboType.SelectedIndexChanged += new System.EventHandler(this.cboType_SelectedIndexChanged);
 			this.cboType.Validating += new System.ComponentModel.CancelEventHandler(this.cboType_Validating);
 			// 
+			// txtLevel
+			// 
+			this.txtLevel.Location = new System.Drawing.Point(238, 3);
+			this.txtLevel.Name = "txtLevel";
+			this.txtLevel.Size = new System.Drawing.Size(100, 20);
+			this.txtLevel.TabIndex = 6;
+			this.txtLevel.Visible = false;
+			// 
 			// SplitterSplitSettings
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoSize = true;
+			this.Controls.Add(this.txtLevel);
 			this.Controls.Add(this.cboType);
 			this.Controls.Add(this.btnRemove);
 			this.Controls.Add(this.picHandle);
@@ -77,6 +87,7 @@
 			this.Size = new System.Drawing.Size(373, 28);
 			((System.ComponentModel.ISupportInitialize)(this.picHandle)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -85,5 +96,6 @@
 		private System.Windows.Forms.ToolTip ToolTips;
 		private System.Windows.Forms.PictureBox picHandle;
 		public System.Windows.Forms.ComboBox cboType;
+		public System.Windows.Forms.TextBox txtLevel;
 	}
 }

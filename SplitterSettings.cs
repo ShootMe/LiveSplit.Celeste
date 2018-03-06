@@ -35,6 +35,7 @@ namespace LiveSplit.Celeste {
 				SplitterSplitSettings setting = new SplitterSplitSettings();
 				setting.cboType.DataSource = GetAvailableDescriptions<SplitType>();
 				setting.cboType.Text = SplitterSplitSettings.GetEnumDescription<SplitType>(split.Type);
+				setting.txtLevel.Text = split.Value;
 				AddHandlers(setting);
 
 				flowMain.Controls.Add(setting);
@@ -45,10 +46,12 @@ namespace LiveSplit.Celeste {
 		}
 		private void AddHandlers(SplitterSplitSettings setting) {
 			setting.cboType.SelectedIndexChanged += new EventHandler(ControlChanged);
+			setting.txtLevel.TextChanged += new EventHandler(ControlChanged);
 			setting.btnRemove.Click += new EventHandler(btnRemove_Click);
 		}
 		private void RemoveHandlers(SplitterSplitSettings setting) {
 			setting.cboType.SelectedIndexChanged -= ControlChanged;
+			setting.txtLevel.TextChanged -= ControlChanged;
 			setting.btnRemove.Click -= btnRemove_Click;
 		}
 		public void btnRemove_Click(object sender, EventArgs e) {
@@ -76,7 +79,8 @@ namespace LiveSplit.Celeste {
 					if (!string.IsNullOrEmpty(setting.cboType.Text)) {
 						SplitType type = SplitterSplitSettings.GetEnumValue<SplitType>(setting.cboType.Text);
 						Splits.Add(new SplitInfo() {
-							Type = type
+							Type = type,
+							Value = setting.txtLevel.Text
 						});
 						if (type.ToString().Length == 8) {
 							chapterCount++;

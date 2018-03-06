@@ -12,10 +12,10 @@ namespace LiveSplit.Celeste {
 		//private static ProgramPointer SaveData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "8B7C90088B432C8B40048D5B6C8B53043B500473368B7490088B15", 27));
 		public Process Program { get; set; }
 		public bool IsHooked { get; set; } = false;
-		private DateTime lastHooked;
+		public DateTime LastHooked;
 
 		public SplitterMemory() {
-			lastHooked = DateTime.MinValue;
+			LastHooked = DateTime.MinValue;
 		}
 		public string RAMPointers() {
 			return Celeste.GetPointer(Program).ToString("X");
@@ -131,8 +131,8 @@ namespace LiveSplit.Celeste {
 		}
 		public bool HookProcess() {
 			IsHooked = Program != null && !Program.HasExited;
-			if (!IsHooked && DateTime.Now > lastHooked.AddSeconds(1)) {
-				lastHooked = DateTime.Now;
+			if (!IsHooked && DateTime.Now > LastHooked.AddSeconds(1)) {
+				LastHooked = DateTime.Now;
 				Process[] processes = Process.GetProcessesByName("Celeste");
 				Program = processes != null && processes.Length > 0 ? processes[0] : null;
 

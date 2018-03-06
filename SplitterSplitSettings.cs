@@ -22,7 +22,16 @@ namespace LiveSplit.Celeste {
 		private void cboType_SelectedIndexChanged(object sender, EventArgs e) {
 			string splitDescription = cboType.SelectedValue.ToString();
 			SplitType split = GetEnumValue<SplitType>(splitDescription);
-			
+			if (split != SplitType.LevelExit && split != SplitType.LevelEnter) {
+				txtLevel.Visible = false;
+				txtLevel.Text = string.Empty;
+				cboType.Size = new System.Drawing.Size(313, 21);
+			} else {
+				cboType.Size = new System.Drawing.Size(207, 21);
+				txtLevel.Visible = true;
+			}
+			txtLevel.Tag = txtLevel.Visible;
+
 			MemberInfo[] infos = typeof(SplitType).GetMember(split.ToString());
 			DescriptionAttribute[] descriptions = null;
 			if (infos.Length > 0) {

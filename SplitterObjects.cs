@@ -48,6 +48,10 @@ namespace LiveSplit.Celeste {
 	public enum SplitType {
 		[Description("Manual Split (Not Automatic)")]
 		Manual,
+		[Description("Level (On Enter)")]
+		LevelEnter,
+		[Description("Level (On Exit)")]
+		LevelExit,
 		[Description("Prologue (Complete)")]
 		Prologue,
 		[Description("Chapter 1 - Crossing (Checkpoint 1)")]
@@ -159,6 +163,7 @@ namespace LiveSplit.Celeste {
 	}
 	public class SplitInfo {
 		public SplitType Type { get; set; }
+		public string Value { get; set; }
 		public SplitInfo() { }
 		public SplitInfo(string copy) {
 			string[] info = copy.Split(',');
@@ -168,9 +173,13 @@ namespace LiveSplit.Celeste {
 					Type = temp;
 				}
 			}
+
+			if (info.Length > 1) {
+				Value = info[1];
+			}
 		}
 		public override string ToString() {
-			return Type.ToString();
+			return Type.ToString() + (string.IsNullOrEmpty(Value) ? string.Empty : "," + Value);
 		}
 	}
 }
