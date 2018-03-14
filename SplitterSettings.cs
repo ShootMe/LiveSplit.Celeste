@@ -21,6 +21,7 @@ namespace LiveSplit.Celeste {
 		}
 
 		private void Settings_Load(object sender, EventArgs e) {
+			FindForm().Text = "Celeste Autosplitter v" + Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 			LoadSettings();
 		}
 		public void LoadSettings() {
@@ -72,6 +73,7 @@ namespace LiveSplit.Celeste {
 			if (isLoading) return;
 
 			int chapterCount = 0;
+			int heartCount = 0;
 			Splits.Clear();
 			foreach (Control control in flowMain.Controls) {
 				if (control is SplitterSplitSettings) {
@@ -84,11 +86,13 @@ namespace LiveSplit.Celeste {
 						});
 						if (type.ToString().Length == 8) {
 							chapterCount++;
+						} else if(type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
+							heartCount++;
 						}
 					}
 				}
 			}
-			ILSplits = chapterCount == 1;
+			ILSplits = chapterCount == 1 && heartCount <= 1;
 		}
 		public XmlNode UpdateSettings(XmlDocument document) {
 			XmlElement xmlSettings = document.CreateElement("Settings");
