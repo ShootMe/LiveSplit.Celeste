@@ -20,8 +20,8 @@ namespace LiveSplit.Celeste {
 		private SplitterSettings settings;
 		private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
 		private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter;
-		private double lastElapsed;
-		private string lastLevelName;
+		private double lastElapsed, levelTimer;
+		private string lastLevelName, levelStarted;
 
 		public SplitterComponent(LiveSplitState state) {
 			mem = new SplitterMemory();
@@ -57,7 +57,17 @@ namespace LiveSplit.Celeste {
 			bool shouldSplit = false;
 
 			if (currentSplit == -1) {
-				if (!settings.ILSplits) {
+				if (settings.Splits.Count == 0) {
+					string levelName = mem.LevelName();
+
+					shouldSplit = !string.IsNullOrEmpty(levelName) && !string.IsNullOrEmpty(lastLevelName) && levelName != lastLevelName;
+
+					if (shouldSplit) {
+						levelStarted = lastLevelName;
+						levelTimer = mem.LevelTime();
+					}
+					lastLevelName = levelName;
+				} else if (!settings.ILSplits) {
 					bool showInputUI = mem.ShowInputUI();
 
 					shouldSplit = !showInputUI && lastShowInputUI && mem.MenuType() == Menu.FileSelect;
@@ -146,13 +156,20 @@ namespace LiveSplit.Celeste {
 								lastHeartGems = heartGems;
 								break;
 						}
+					} else if (split == null && Model.CurrentState.Run.Count == 1) {
+						if (levelName == levelStarted) {
+							levelStarted = lastLevelName;
+							levelTimer = elapsed;
+						} else {
+							shouldSplit = !string.IsNullOrEmpty(levelName) && !string.IsNullOrEmpty(lastLevelName) && levelName != lastLevelName;
+						}
 					}
 
 					lastCompleted = completed;
 					lastLevelName = levelName;
 
 					if (elapsed > 0 || lastElapsed == elapsed) {
-						Model.CurrentState.SetGameTime(TimeSpan.FromSeconds(elapsed));
+						Model.CurrentState.SetGameTime(TimeSpan.FromSeconds(settings.Splits.Count == 0 ? elapsed - levelTimer : elapsed));
 					}
 				}
 
@@ -274,7 +291,7 @@ namespace LiveSplit.Celeste {
 			WriteLog("---------Split-----------------------------------");
 			if (currentSplit == Model.CurrentState.Run.Count) {
 				ISegment segment = Model.CurrentState.Run[currentSplit - 1];
-				segment.SplitTime = new Time(segment.SplitTime.RealTime, TimeSpan.FromSeconds(lastElapsed));
+				segment.SplitTime = new Time(segment.SplitTime.RealTime, TimeSpan.FromSeconds(settings.Splits.Count == 0 ? lastElapsed - levelTimer : lastElapsed));
 			} else {
 				SplitInfo split = currentSplit < settings.Splits.Count ? settings.Splits[currentSplit] : null;
 				if (split != null) {

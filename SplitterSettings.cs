@@ -86,13 +86,13 @@ namespace LiveSplit.Celeste {
 						});
 						if (type.ToString().Length == 8) {
 							chapterCount++;
-						} else if(type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
+						} else if (type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
 							heartCount++;
 						}
 					}
 				}
 			}
-			ILSplits = chapterCount == 1 && heartCount <= 1;
+			ILSplits = Splits.Count == 0 || (chapterCount == 1 && heartCount <= 1);
 		}
 		public XmlNode UpdateSettings(XmlDocument document) {
 			XmlElement xmlSettings = document.CreateElement("Settings");
@@ -111,6 +111,7 @@ namespace LiveSplit.Celeste {
 		}
 		public void SetSettings(XmlNode settings) {
 			int chapterCount = 0;
+			int heartCount = 0;
 			Splits.Clear();
 			XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
 			foreach (XmlNode splitNode in splitNodes) {
@@ -119,9 +120,11 @@ namespace LiveSplit.Celeste {
 				Splits.Add(split);
 				if (split.Type.ToString().Length == 8) {
 					chapterCount++;
+				} else if (split.Type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
+					heartCount++;
 				}
 			}
-			ILSplits = chapterCount == 1;
+			ILSplits = Splits.Count == 0 || (chapterCount == 1 && heartCount <= 1);
 		}
 		private void btnAddSplit_Click(object sender, EventArgs e) {
 			SplitterSplitSettings setting = new SplitterSplitSettings();
