@@ -157,7 +157,7 @@ namespace LiveSplit.Celeste {
 								break;
 						}
 					} else if (split == null && Model.CurrentState.Run.Count == 1) {
-						if (levelName == levelStarted) {
+						if (levelName == levelStarted && elapsed - levelTimer < 2.5) {
 							levelStarted = lastLevelName;
 							levelTimer = elapsed;
 						} else {

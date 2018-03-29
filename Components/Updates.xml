@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.2.5">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Fix room timer when you loop around </change>
+		</changelog>
+	</update>
 	<update version="1.2.4">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
