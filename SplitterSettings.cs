@@ -92,7 +92,7 @@ namespace LiveSplit.Celeste {
 					}
 				}
 			}
-			ILSplits = Splits.Count == 0 || (chapterCount == 1 && heartCount <= 1);
+			ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
 		}
 		public XmlNode UpdateSettings(XmlDocument document) {
 			XmlElement xmlSettings = document.CreateElement("Settings");
@@ -124,7 +124,7 @@ namespace LiveSplit.Celeste {
 					heartCount++;
 				}
 			}
-			ILSplits = Splits.Count == 0 || (chapterCount == 1 && heartCount <= 1);
+			ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
 		}
 		private void btnAddSplit_Click(object sender, EventArgs e) {
 			SplitterSplitSettings setting = new SplitterSplitSettings();
