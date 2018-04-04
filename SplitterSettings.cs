@@ -8,7 +8,7 @@ using System.Xml;
 namespace LiveSplit.Celeste {
 	public partial class SplitterSettings : UserControl {
 		public List<SplitInfo> Splits { get; private set; }
-		public bool ILSplits;
+		public bool ILSplits, ChapterSplits;
 		private bool isLoading;
 		public SplitterSettings() {
 			isLoading = true;
@@ -16,6 +16,7 @@ namespace LiveSplit.Celeste {
 
 			Splits = new List<SplitInfo>();
 			ILSplits = false;
+			ChapterSplits = false;
 
 			isLoading = false;
 		}
@@ -93,6 +94,7 @@ namespace LiveSplit.Celeste {
 				}
 			}
 			ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
+			ChapterSplits = chapterCount > 0 || heartCount > 0;
 		}
 		public XmlNode UpdateSettings(XmlDocument document) {
 			XmlElement xmlSettings = document.CreateElement("Settings");
@@ -125,6 +127,7 @@ namespace LiveSplit.Celeste {
 				}
 			}
 			ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
+			ChapterSplits = chapterCount > 0 || heartCount > 0;
 		}
 		private void btnAddSplit_Click(object sender, EventArgs e) {
 			SplitterSplitSettings setting = new SplitterSplitSettings();
