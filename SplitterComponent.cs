@@ -14,7 +14,7 @@ namespace LiveSplit.Celeste {
 		public string ComponentName { get { return "Celeste Autosplitter"; } }
 		public TimerModel Model { get; set; }
 		public IDictionary<string, Action> ContextMenuControls { get { return null; } }
-		private static string LOGFILE = "_Celeste.log";
+		private static string LOGFILE = "_Celeste.txt";
 		private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
 		private SplitterMemory mem;
 		private SplitterSettings settings;
@@ -246,14 +246,6 @@ namespace LiveSplit.Celeste {
 		}
 
 		public void Update(IInvalidator invalidator, LiveSplitState lvstate, float width, float height, LayoutMode mode) {
-			IList<ILayoutComponent> components = lvstate.Layout.LayoutComponents;
-			for (int i = components.Count - 1; i >= 0; i--) {
-				ILayoutComponent component = components[i];
-				if (component.Component is SplitterComponent && invalidator == null && width == 0 && height == 0) {
-					components.Remove(component);
-				}
-			}
-
 			GetValues();
 		}
 		public void OnReset(object sender, TimerPhase e) {
@@ -326,7 +318,17 @@ namespace LiveSplit.Celeste {
 		public float PaddingRight { get { return 0; } }
 		public float PaddingTop { get { return 0; } }
 		public float VerticalHeight { get { return 0; } }
-		public void Dispose() { }
+		public void Dispose() {
+			if (Model != null) {
+				Model.CurrentState.OnReset -= OnReset;
+				Model.CurrentState.OnPause -= OnPause;
+				Model.CurrentState.OnResume -= OnResume;
+				Model.CurrentState.OnStart -= OnStart;
+				Model.CurrentState.OnSplit -= OnSplit;
+				Model.CurrentState.OnUndoSplit -= OnUndoSplit;
+				Model.CurrentState.OnSkipSplit -= OnSkipSplit;
+			}
+		}
 	}
 }
 #endif

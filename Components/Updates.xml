@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
-	<update version="1.2.7">
+	<update version="1.2.8">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> Removed event handlers on game change </change>
+		</changelog>
+	</update>
+		<update version="1.2.7">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
 		</files>
