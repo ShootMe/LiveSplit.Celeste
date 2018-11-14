@@ -7,5 +7,5 @@ Autosplitter for the game Celeste
   - Click the Activate autosplitter button
 
 ## Splits
-  - Splits at the end of each Chapter and Prologue
-  - More customizing will come soon
+  - Fully customizeable with tons of options
+  - For On Enter/Exit splits you use the games name for that screen, which you can find by enabling debug and using the map editor
