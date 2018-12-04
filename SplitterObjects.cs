@@ -48,6 +48,8 @@ namespace LiveSplit.Celeste {
 	public enum SplitType {
 		[Description("Manual Split (Not Automatic)")]
 		Manual,
+		[Description("Any Chapter (Complete)")]
+		ChapterA,
 		[Description("Level (On Enter)")]
 		LevelEnter,
 		[Description("Level (On Exit)")]
