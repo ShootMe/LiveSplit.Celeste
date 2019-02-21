@@ -135,6 +135,7 @@ namespace LiveSplit.Celeste {
 							int cassettes = mem.Cassettes();
 							int heartGems = mem.HeartGems();
 							switch (split.Type) {
+								case SplitType.HeartGemAny: shouldSplit = heartGems == lastHeartGems + 1; break;
 								case SplitType.Chapter1Cassette: shouldSplit = areaID == Area.ForsakenCity && cassettes == lastCassettes + 1; break;
 								case SplitType.Chapter1HeartGem: shouldSplit = areaID == Area.ForsakenCity && heartGems == lastHeartGems + 1; break;
 								case SplitType.Chapter2Cassette: shouldSplit = areaID == Area.OldSite && cassettes == lastCassettes + 1; break;

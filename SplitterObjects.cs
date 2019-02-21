@@ -50,6 +50,8 @@ namespace LiveSplit.Celeste {
 		Manual,
 		[Description("Any Chapter (Complete)")]
 		ChapterA,
+		[Description("Any Heart Gem (Pickup)")]
+		HeartGemAny,
 		[Description("Level (On Enter)")]
 		LevelEnter,
 		[Description("Level (On Exit)")]

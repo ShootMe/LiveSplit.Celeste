@@ -87,7 +87,7 @@ namespace LiveSplit.Celeste {
 						});
 						if (type.ToString().Length == 8) {
 							chapterCount++;
-						} else if (type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
+						} else if (type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
 							heartCount++;
 						}
 					}
@@ -122,7 +122,7 @@ namespace LiveSplit.Celeste {
 				Splits.Add(split);
 				if (split.Type.ToString().Length == 8) {
 					chapterCount++;
-				} else if (split.Type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) > 0) {
+				} else if (split.Type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
 					heartCount++;
 				}
 			}
