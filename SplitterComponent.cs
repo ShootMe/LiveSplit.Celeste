@@ -103,6 +103,7 @@ namespace LiveSplit.Celeste {
 						case SplitType.Chapter7: shouldSplit = ChapterSplit(areaID, Area.TheSummit, levelName, completed, elapsed); break;
 						case SplitType.Epilogue: shouldSplit = ChapterSplit(areaID, Area.Epilogue, levelName, completed, elapsed); break;
 						case SplitType.Chapter8: shouldSplit = ChapterSplit(areaID, Area.Core, levelName, completed, elapsed); break;
+						case SplitType.Chapter9: shouldSplit = ChapterSplit(areaID, Area.Farewell, levelName, completed, elapsed); break;
 						case SplitType.Chapter1Checkpoint1: shouldSplit = areaID == Area.ForsakenCity && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "6" : "04"); break;
 						case SplitType.Chapter1Checkpoint2: shouldSplit = areaID == Area.ForsakenCity && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "9b" : "08"); break;
 						case SplitType.Chapter2Checkpoint1: shouldSplit = areaID == Area.OldSite && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "3" : "03"); break;
@@ -131,6 +132,14 @@ namespace LiveSplit.Celeste {
 						case SplitType.Chapter8Checkpoint1: shouldSplit = areaID == Area.Core && levelName == "a-00"; break;
 						case SplitType.Chapter8Checkpoint2: shouldSplit = areaID == Area.Core && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00"); break;
 						case SplitType.Chapter8Checkpoint3: shouldSplit = areaID == Area.Core && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01"); break;
+						case SplitType.Chapter9Checkpoint1: shouldSplit = areaID == Area.Farewell && levelName == "a-00"; break;
+						case SplitType.Chapter9Checkpoint2: shouldSplit = areaID == Area.Farewell && levelName == "c-00"; break;
+						case SplitType.Chapter9Checkpoint3: shouldSplit = areaID == Area.Farewell && levelName == "e-00z"; break;
+						case SplitType.Chapter9Checkpoint4: shouldSplit = areaID == Area.Farewell && levelName == "f-door"; break;
+						case SplitType.Chapter9Checkpoint5: shouldSplit = areaID == Area.Farewell && levelName == "h-00b"; break;
+						case SplitType.Chapter9Checkpoint6: shouldSplit = areaID == Area.Farewell && levelName == "i-00"; break;
+						case SplitType.Chapter9Checkpoint7: shouldSplit = areaID == Area.Farewell && levelName == "j-00"; break;
+						case SplitType.Chapter9Checkpoint8: shouldSplit = areaID == Area.Farewell && levelName == "j-16"; break;
 						default:
 							int cassettes = mem.Cassettes();
 							int heartGems = mem.HeartGems();

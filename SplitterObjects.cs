@@ -29,7 +29,8 @@ namespace LiveSplit.Celeste {
 		Reflection = 6,
 		TheSummit = 7,
 		Epilogue = 8,
-		Core = 9
+		Core = 9,
+		Farewell = 10
 	}
 	public enum AreaMode {
 		ASide,
@@ -132,6 +133,24 @@ namespace LiveSplit.Celeste {
 		Chapter8Checkpoint3,
 		[Description("Chapter 8 - Core A/B/C (Complete)")]
 		Chapter8,
+		[Description("Chapter 9 - Singular (CP 1)")]
+		Chapter9Checkpoint1,
+		[Description("Chapter 9 - Power Source (CP 2)")]
+		Chapter9Checkpoint2,
+		[Description("Chapter 9 - Remembered (CP 3)")]
+		Chapter9Checkpoint3,
+		[Description("Chapter 9 - Event Horizon (CP 4)")]
+		Chapter9Checkpoint4,
+		[Description("Chapter 9 - Determination (CP 5)")]
+		Chapter9Checkpoint5,
+		[Description("Chapter 9 - Stubbornness (CP 6)")]
+		Chapter9Checkpoint6,
+		[Description("Chapter 9 - Reconciliation (CP 7)")]
+		Chapter9Checkpoint7,
+		[Description("Chapter 9 - Farewell (CP 8)")]
+		Chapter9Checkpoint8,
+		[Description("Chapter 9 - Farewell (Complete)")]
+		Chapter9,
 		[Description("Chapter 1 - Cassette (Pickup)")]
 		Chapter1Cassette,
 		[Description("Chapter 1 - Heart Gem A/B/C (Pickup)")]
