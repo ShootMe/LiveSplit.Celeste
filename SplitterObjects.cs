@@ -33,9 +33,10 @@ namespace LiveSplit.Celeste {
 		Farewell = 10
 	}
 	public enum AreaMode {
-		ASide,
-		BSide,
-		CSide
+		None = -1,
+		ASide = 0,
+		BSide = 1,
+		CSide = 2
 	}
 	public enum Menu {
 		InGame = 0,

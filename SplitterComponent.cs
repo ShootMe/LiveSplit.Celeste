@@ -87,11 +87,12 @@ namespace LiveSplit.Celeste {
 				int addAmount = settings.Splits.Count > 0 && !settings.ChapterSplits ? 1 : 0;
 				SplitInfo split = currentSplit + addAmount < settings.Splits.Count ? settings.Splits[currentSplit + addAmount] : null;
 				string levelName = mem.LevelName();
+				if (string.IsNullOrEmpty(levelName) && areaID != Area.Menu) { levelName = lastLevelName; }
 
 				if (split != null && split.Type != SplitType.Manual) {
 					switch (split.Type) {
-						case SplitType.LevelEnter: shouldSplit = !string.IsNullOrEmpty(levelName) && !string.IsNullOrEmpty(lastLevelName) && levelName != lastLevelName && levelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
-						case SplitType.LevelExit: shouldSplit = !string.IsNullOrEmpty(levelName) && !string.IsNullOrEmpty(lastLevelName) && levelName != lastLevelName && lastLevelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
+						case SplitType.LevelEnter: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && levelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
+						case SplitType.LevelExit: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && lastLevelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
 						case SplitType.ChapterA: shouldSplit = ChapterSplit(Area.Prologue, Area.Prologue, levelName, completed, elapsed); break;
 						case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, levelName, completed, elapsed); break;
 						case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, levelName, completed, elapsed); break;
@@ -171,7 +172,7 @@ namespace LiveSplit.Celeste {
 						levelStarted = lastLevelName;
 						levelTimer = elapsed;
 					} else {
-						shouldSplit = !string.IsNullOrEmpty(levelName) && !string.IsNullOrEmpty(lastLevelName) && levelName != lastLevelName;
+						shouldSplit = areaID != Area.Menu && levelName != lastLevelName;
 					}
 				}
 
