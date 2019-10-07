@@ -57,7 +57,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(456, 29);
+            this.flowMain.Size = new System.Drawing.Size(473, 29);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -76,23 +76,23 @@
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(456, 29);
+            this.flowOptions.Size = new System.Drawing.Size(473, 29);
             this.flowOptions.TabIndex = 0;
             // 
             // chkAutoReset
             // 
             this.chkAutoReset.Location = new System.Drawing.Point(68, 3);
             this.chkAutoReset.Name = "chkAutoReset";
-            this.chkAutoReset.Size = new System.Drawing.Size(79, 23);
+            this.chkAutoReset.Size = new System.Drawing.Size(96, 23);
             this.chkAutoReset.TabIndex = 5;
             this.chkAutoReset.TabStop = false;
-            this.chkAutoReset.Text = "Auto Reset";
+            this.chkAutoReset.Text = "Auto Reset ILs";
             this.chkAutoReset.UseVisualStyleBackColor = true;
             this.chkAutoReset.CheckedChanged += new System.EventHandler(this.chkAutoReset_CheckedChanged);
             // 
             // lblDefaultSplits
             // 
-            this.lblDefaultSplits.Location = new System.Drawing.Point(153, 0);
+            this.lblDefaultSplits.Location = new System.Drawing.Point(170, 0);
             this.lblDefaultSplits.Name = "lblDefaultSplits";
             this.lblDefaultSplits.Size = new System.Drawing.Size(44, 26);
             this.lblDefaultSplits.TabIndex = 3;
@@ -102,7 +102,7 @@
             // btnChapterSplits
             // 
             this.btnChapterSplits.AutoSize = true;
-            this.btnChapterSplits.Location = new System.Drawing.Point(203, 3);
+            this.btnChapterSplits.Location = new System.Drawing.Point(220, 3);
             this.btnChapterSplits.Name = "btnChapterSplits";
             this.btnChapterSplits.Size = new System.Drawing.Size(54, 23);
             this.btnChapterSplits.TabIndex = 1;
@@ -114,7 +114,7 @@
             // btnChapterCheckpointSplits
             // 
             this.btnChapterCheckpointSplits.AutoSize = true;
-            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(263, 3);
+            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(280, 3);
             this.btnChapterCheckpointSplits.Name = "btnChapterCheckpointSplits";
             this.btnChapterCheckpointSplits.Size = new System.Drawing.Size(111, 23);
             this.btnChapterCheckpointSplits.TabIndex = 2;
@@ -126,7 +126,7 @@
             // btnABCSides
             // 
             this.btnABCSides.AutoSize = true;
-            this.btnABCSides.Location = new System.Drawing.Point(380, 3);
+            this.btnABCSides.Location = new System.Drawing.Point(397, 3);
             this.btnABCSides.Name = "btnABCSides";
             this.btnABCSides.Size = new System.Drawing.Size(73, 23);
             this.btnABCSides.TabIndex = 4;
@@ -145,7 +145,7 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SplitterSettings";
-            this.Size = new System.Drawing.Size(456, 29);
+            this.Size = new System.Drawing.Size(473, 29);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
