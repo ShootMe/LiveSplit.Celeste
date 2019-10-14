@@ -13,13 +13,13 @@ namespace LiveSplit.Celeste {
     public class SplitterComponent : IComponent {
         public string ComponentName { get { return "Celeste Autosplitter"; } }
         public TimerModel Model { get; set; }
-        public IDictionary<string, Action> ContextMenuControls { get { return null; } }
+        public IDictionary<string, Action> ContextMenuControls { get; protected set; }
         private static string LOGFILE = "_Celeste.txt";
         private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
         private SplitterMemory mem;
         private SplitterSettings settings;
         private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
-        private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter;
+        private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
         private double lastElapsed, levelTimer;
         private string lastLevelName, levelStarted;
 
@@ -42,6 +42,12 @@ namespace LiveSplit.Celeste {
                 state.OnUndoSplit += OnUndoSplit;
                 state.OnSkipSplit += OnSkipSplit;
             }
+
+            ContextMenuControls = new Dictionary<string, Action>();
+            ContextMenuControls.Add("Add enter split", () => AddLevelSplit(false));
+            ContextMenuControls.Add("Add exit split", () => AddLevelSplit(true));
+            ContextMenuControls.Add("Auto add enter splits", () => { autoAdding = true; autoAddingExit = false; });
+            ContextMenuControls.Add("Auto add exit splits", () => { autoAdding = true; autoAddingExit = true; });
         }
 
         public void GetValues() {
@@ -180,6 +186,9 @@ namespace LiveSplit.Celeste {
                     levelTimer = mem.LevelTime();
                 }
 
+                if (autoAdding && !shouldSplit && levelName != lastLevelName) {
+                    AddLevelSplit(autoAddingExit, levelName);
+                }
                 lastCompleted = completed;
                 lastLevelName = levelName;
 
@@ -214,6 +223,20 @@ namespace LiveSplit.Celeste {
                     Model.Split();
                 }
             }
+        }
+        private void AddLevelSplit(bool exit, string levelName = null) {
+            if (!mem.IsHooked) { return; }
+            if (levelName == null) { levelName = mem.LevelName(); }
+            if (string.IsNullOrEmpty(levelName)) { return; }
+            int idx = Model.CurrentState.CurrentSplitIndex;
+            if (idx < 0 || currentSplit < 0) { return; }
+            Model.CurrentState.Run.Insert(idx, new Segment("-" + levelName));
+            Model.CurrentState.CallRunManuallyModified();
+            settings.Splits.Insert(currentSplit, new SplitInfo() {
+                Type = exit ? SplitType.LevelExit : SplitType.LevelEnter,
+                Value = levelName
+            });
+            Model.SkipSplit();
         }
         private void LogValues() {
             if (lastLogCheck == 0) {
@@ -263,6 +286,7 @@ namespace LiveSplit.Celeste {
         public void OnReset(object sender, TimerPhase e) {
             currentSplit = -1;
             exitingChapter = false;
+            autoAdding = false;
             Model.CurrentState.IsGameTimePaused = true;
             WriteLog("---------Reset----------------------------------");
         }
