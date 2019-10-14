@@ -228,14 +228,28 @@ namespace LiveSplit.Celeste {
             if (!mem.IsHooked) { return; }
             if (levelName == null) { levelName = mem.LevelName(); }
             if (string.IsNullOrEmpty(levelName)) { return; }
-            int idx = Model.CurrentState.CurrentSplitIndex;
-            if (idx < 0 || currentSplit < 0) { return; }
-            Model.CurrentState.Run.Insert(idx, new Segment("-" + levelName));
+            int idx = currentSplit;
+            if (idx < 0) {
+                if (Model.CurrentState.Run.Count == 1 && settings.Splits.Count == 0) {
+                    Model.CurrentState.Run[0].Name = "-" + levelName;
+                } else {
+                    Model.CurrentState.Run.Add(new Segment("-" + levelName));
+                }
+            } else {
+                Model.CurrentState.Run.Insert(idx, new Segment("-" + levelName));
+            }
             Model.CurrentState.CallRunManuallyModified();
-            settings.Splits.Insert(currentSplit, new SplitInfo() {
-                Type = exit ? SplitType.LevelExit : SplitType.LevelEnter,
-                Value = levelName
-            });
+            if (idx < 0) {
+                settings.Splits.Add(new SplitInfo() {
+                    Type = exit ? SplitType.LevelExit : SplitType.LevelEnter,
+                    Value = levelName
+                });
+            } else {
+                settings.Splits.Insert(idx, new SplitInfo() {
+                    Type = exit ? SplitType.LevelExit : SplitType.LevelEnter,
+                    Value = levelName
+                });
+            }
             Model.SkipSplit();
         }
         private void LogValues() {
