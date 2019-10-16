@@ -239,7 +239,7 @@ namespace LiveSplit.Celeste {
                 Model.CurrentState.Run.Insert(idx, new Segment("-" + levelName));
             }
             Model.CurrentState.CallRunManuallyModified();
-            if (idx < 0) {
+            if (idx < 0 || idx >= settings.Splits.Count) {
                 settings.Splits.Add(new SplitInfo() {
                     Type = exit ? SplitType.LevelExit : SplitType.LevelEnter,
                     Value = levelName
