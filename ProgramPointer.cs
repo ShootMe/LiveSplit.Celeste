@@ -28,6 +28,9 @@ namespace LiveSplit.Celeste {
     public class ProgramPointer {
         private int lastID;
         private DateTime lastTry;
+        private IntPtr lastPointer;
+        private string lastSignature;
+        private MemorySearcher searcher;
         private ProgramSignature[] signatures;
         private int[] offsets;
         public IntPtr Pointer { get; private set; }
@@ -39,6 +42,10 @@ namespace LiveSplit.Celeste {
             this.signatures = signatures;
             lastID = -1;
             lastTry = DateTime.MinValue;
+            searcher = new MemorySearcher();
+            searcher.MemoryFilter = delegate (MemInfo info) {
+                return (info.State & 0x1000) != 0 && (info.Protect & 0x40) != 0 && (info.Protect & 0x100) == 0;
+            };
         }
         public ProgramPointer(AutoDeref autoDeref, params int[] offsets) {
             AutoDeref = autoDeref;
@@ -80,8 +87,13 @@ namespace LiveSplit.Celeste {
                 lastID = program.Id;
             }
 
+            if (Pointer != IntPtr.Zero && !searcher.VerifySignature(program, lastPointer, lastSignature)) {
+                Pointer = IntPtr.Zero;
+            }
+
             if (Pointer == IntPtr.Zero && DateTime.Now > lastTry.AddSeconds(1)) {
                 lastTry = DateTime.Now;
+                searcher.memoryInfo = null;
 
                 Pointer = GetVersionedFunctionPointer(program);
                 if (Pointer != IntPtr.Zero) {
@@ -105,16 +117,14 @@ namespace LiveSplit.Celeste {
         }
         private IntPtr GetVersionedFunctionPointer(Process program) {
             if (signatures != null) {
-                MemorySearcher searcher = new MemorySearcher();
-                searcher.MemoryFilter = delegate (MemInfo info) {
-                    return (info.State & 0x1000) != 0 && (info.Protect & 0x40) != 0 && (info.Protect & 0x100) == 0;
-                };
                 for (int i = 0; i < signatures.Length; i++) {
                     ProgramSignature signature = signatures[i];
 
                     IntPtr ptr = searcher.FindSignature(program, signature.Signature);
                     if (ptr != IntPtr.Zero) {
                         Version = signature.Version;
+                        lastSignature = signature.Signature;
+                        lastPointer = ptr;
                         return ptr + signature.Offset;
                     }
                 }
