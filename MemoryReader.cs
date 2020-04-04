@@ -337,6 +337,25 @@ namespace LiveSplit.Memory {
             }
             return pointers;
         }
+        public bool VerifySignature(Process process, IntPtr pointer, string signature) {
+            byte[] pattern;
+            bool[] mask;
+            GetSignature(signature, out pattern, out mask);
+            int[] offsets = GetCharacterOffsets(pattern, mask);
+
+            MemInfo memInfoStart;
+            MemInfo memInfoEnd;
+            if (VirtualQueryEx(process.Handle, pointer, out memInfoStart, Marshal.SizeOf<MemInfo>()) == 0 ||
+                VirtualQueryEx(process.Handle, pointer + pattern.Length, out memInfoEnd, Marshal.SizeOf<MemInfo>()) == 0 ||
+                memInfoStart.BaseAddress != memInfoEnd.BaseAddress ||
+                !MemoryFilter(memInfoStart)) {
+                return false;
+            }
+
+            byte[] buff = new byte[pattern.Length];
+            ReadProcessMemory(process.Handle, pointer, buff, (uint)buff.Length, 0);
+            return ScanMemory(buff, pattern, mask, offsets) == 0;
+        }
         public void GetMemoryInfo(IntPtr pHandle) {
             if (memoryInfo != null) { return; }
 
