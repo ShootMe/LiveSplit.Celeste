@@ -91,9 +91,8 @@ namespace LiveSplit.Celeste {
                 Pointer = IntPtr.Zero;
             }
 
-            if (Pointer == IntPtr.Zero && DateTime.Now > lastTry.AddSeconds(1)) {
-                lastTry = DateTime.Now;
-                searcher.memoryInfo = null;
+            if (Pointer == IntPtr.Zero && DateTime.Now > lastTry) {
+                lastTry = DateTime.Now.AddSeconds(1);
 
                 Pointer = GetVersionedFunctionPointer(program);
                 if (Pointer != IntPtr.Zero) {
@@ -117,6 +116,7 @@ namespace LiveSplit.Celeste {
         }
         private IntPtr GetVersionedFunctionPointer(Process program) {
             if (signatures != null) {
+                searcher.memoryInfo = null;
                 for (int i = 0; i < signatures.Length; i++) {
                     ProgramSignature signature = signatures[i];
 

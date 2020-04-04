@@ -343,10 +343,10 @@ namespace LiveSplit.Memory {
             GetSignature(signature, out pattern, out mask);
             int[] offsets = GetCharacterOffsets(pattern, mask);
 
-            MemInfo memInfoStart;
-            MemInfo memInfoEnd;
-            if (VirtualQueryEx(process.Handle, pointer, out memInfoStart, Marshal.SizeOf<MemInfo>()) == 0 ||
-                VirtualQueryEx(process.Handle, pointer + pattern.Length, out memInfoEnd, Marshal.SizeOf<MemInfo>()) == 0 ||
+            MemInfo memInfoStart = default(MemInfo);
+            MemInfo memInfoEnd = default(MemInfo);
+            if (VirtualQueryEx(process.Handle, pointer, out memInfoStart, Marshal.SizeOf(memInfoStart)) == 0 ||
+                VirtualQueryEx(process.Handle, pointer + pattern.Length, out memInfoEnd, Marshal.SizeOf(memInfoStart)) == 0 ||
                 memInfoStart.BaseAddress != memInfoEnd.BaseAddress ||
                 !MemoryFilter(memInfoStart)) {
                 return false;
