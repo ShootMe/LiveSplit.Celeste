@@ -27,6 +27,7 @@
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
             this.flowOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.chkAutoReset = new System.Windows.Forms.CheckBox();
+            this.chkSetHighPriority = new System.Windows.Forms.CheckBox();
             this.lblDefaultSplits = new System.Windows.Forms.Label();
             this.btnChapterSplits = new System.Windows.Forms.Button();
             this.btnChapterCheckpointSplits = new System.Windows.Forms.Button();
@@ -165,5 +166,6 @@
         private System.Windows.Forms.Button btnChapterCheckpointSplits;
         private System.Windows.Forms.Button btnABCSides;
         private System.Windows.Forms.CheckBox chkAutoReset;
+        private System.Windows.Forms.CheckBox chkSetHighPriority;
     }
 }

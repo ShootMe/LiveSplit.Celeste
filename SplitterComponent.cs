@@ -26,6 +26,8 @@ namespace LiveSplit.Celeste {
         public SplitterComponent(LiveSplitState state) {
             mem = new SplitterMemory();
             settings = new SplitterSettings();
+            settings.HighPrioritySettingChanged += HighPrioritySettingChanged;
+
             foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
                 currentValues[key] = "";
             }
@@ -51,7 +53,7 @@ namespace LiveSplit.Celeste {
         }
 
         public void GetValues() {
-            if (!mem.HookProcess()) { return; }
+            if (!mem.HookProcess(settings.SetHighPriority)) { return; }
 
             if (Model != null) {
                 HandleSplits();
@@ -343,6 +345,10 @@ namespace LiveSplit.Celeste {
                 }
             }
         }
+        private void HighPrioritySettingChanged(object sender, EventArgs e)
+        {
+            mem.ToggleHighPriority(settings.SetHighPriority);
+        }
         private void WriteLog(string data) {
             if (hasLog || !Console.IsOutputRedirected) {
                 if (Console.IsOutputRedirected) {
@@ -378,6 +384,7 @@ namespace LiveSplit.Celeste {
                 Model.CurrentState.OnUndoSplit -= OnUndoSplit;
                 Model.CurrentState.OnSkipSplit -= OnSkipSplit;
             }
+            settings.HighPrioritySettingChanged -= HighPrioritySettingChanged;
         }
     }
 }

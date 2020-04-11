@@ -1,6 +1,7 @@
 ﻿using LiveSplit.Memory;
 using System;
 using System.Diagnostics;
+using System.Linq;
 namespace LiveSplit.Celeste {
     //.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\SOS.dll
     public partial class SplitterMemory {
@@ -129,20 +130,25 @@ namespace LiveSplit.Celeste {
             }
             return Menu.InGame;
         }
-        public bool HookProcess() {
+        public bool HookProcess(bool setHighPriority) {
             IsHooked = Program != null && !Program.HasExited;
             if (!IsHooked && DateTime.Now > LastHooked.AddSeconds(1)) {
                 LastHooked = DateTime.Now;
-                Process[] processes = Process.GetProcessesByName("Celeste");
-                Program = processes != null && processes.Length > 0 ? processes[0] : null;
-
+                Program = Process.GetProcessesByName("Celeste").FirstOrDefault();
                 if (Program != null && !Program.HasExited) {
                     MemoryReader.Update64Bit(Program);
+                    if (setHighPriority) {
+                        Program.PriorityClass = ProcessPriorityClass.High;
+                    }
                     IsHooked = true;
                 }
             }
 
             return IsHooked;
+        }
+        public void ToggleHighPriority(bool high) {
+            if (!IsHooked) { return; }
+            Program.PriorityClass = high ? ProcessPriorityClass.High : ProcessPriorityClass.Normal;
         }
         public void Dispose() {
             if (Program != null) {

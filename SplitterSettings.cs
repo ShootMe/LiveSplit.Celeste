@@ -8,7 +8,8 @@ using System.Xml;
 namespace LiveSplit.Celeste {
     public partial class SplitterSettings : UserControl {
         public List<SplitInfo> Splits { get; private set; }
-        public bool ILSplits, ChapterSplits, AutoReset;
+        public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority;
+        public event EventHandler HighPrioritySettingChanged;
         private bool isLoading;
         public SplitterSettings() {
             isLoading = true;
@@ -18,6 +19,7 @@ namespace LiveSplit.Celeste {
             ILSplits = false;
             ChapterSplits = false;
             AutoReset = true;
+            SetHighPriority = true;
 
             isLoading = false;
         }
@@ -45,6 +47,7 @@ namespace LiveSplit.Celeste {
             }
 
             chkAutoReset.Checked = AutoReset;
+            chkSetHighPriority.Checked = SetHighPriority;
             isLoading = false;
             this.flowMain.ResumeLayout(true);
         }
@@ -106,6 +109,10 @@ namespace LiveSplit.Celeste {
             xmlReset.InnerText = AutoReset.ToString();
             xmlSettings.AppendChild(xmlReset);
 
+            XmlElement xmlHighPriority = document.CreateElement("SetHighPriority");
+            xmlHighPriority.InnerText = SetHighPriority.ToString();
+            xmlSettings.AppendChild(xmlHighPriority);
+
             XmlElement xmlSplits = document.CreateElement("Splits");
             xmlSettings.AppendChild(xmlSplits);
 
@@ -123,7 +130,10 @@ namespace LiveSplit.Celeste {
             Splits.Clear();
 
             XmlNode resetNode = settings.SelectSingleNode(".//AutoReset");
-            AutoReset = resetNode != null && !string.IsNullOrEmpty(resetNode.InnerText) ? bool.Parse(resetNode.InnerText) : true;
+            AutoReset = !string.IsNullOrEmpty(resetNode?.InnerText) ? bool.Parse(resetNode.InnerText) : true;
+
+            XmlNode highPriorityNode = settings.SelectSingleNode(".//SetHighPriority");
+            SetHighPriority = !string.IsNullOrEmpty(highPriorityNode?.InnerText) ? bool.Parse(highPriorityNode.InnerText) : true;
 
             XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
             foreach (XmlNode splitNode in splitNodes) {
@@ -151,6 +161,11 @@ namespace LiveSplit.Celeste {
         }
         private void chkAutoReset_CheckedChanged(object sender, EventArgs e) {
             UpdateSplits();
+        }
+        private void chkSetHighPriority_CheckedChanged(object sender, EventArgs e)
+        {
+            SetHighPriority = chkSetHighPriority.Checked;
+            HighPrioritySettingChanged?.Invoke(this, EventArgs.Empty);
         }
         private void btnChapterSplits_Click(object sender, EventArgs e) {
             if (Splits.Count > 0 && MessageBox.Show(this, "You already have some splits setup. This will clear anything you have and default in the Chapter splits.\r\n\r\nAre you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) {
