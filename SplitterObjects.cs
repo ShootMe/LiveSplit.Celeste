@@ -16,7 +16,8 @@ namespace LiveSplit.Celeste {
         LevelName,
         Strawberries,
         HeartGems,
-        Cassettes
+        Cassettes,
+        HighPriority
     }
     public enum Area {
         Menu = -1,

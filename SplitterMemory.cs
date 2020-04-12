@@ -1,19 +1,17 @@
-﻿using LiveSplit.Memory;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 namespace LiveSplit.Celeste {
     //.load C:\Windows\Microsoft.NET\Framework\v4.0.30319\SOS.dll
     public partial class SplitterMemory {
-        private static ProgramPointer Celeste = new ProgramPointer(AutoDeref.Single,
-            new ProgramSignature(PointerVersion.XNA, "83C604F30F7E06660FD6078BCBFF15????????8D15", 21),
-            new ProgramSignature(PointerVersion.OpenGL, "8B55F08B45E88D5274E8????????8B45F08D15", 19),
-            new ProgramSignature(PointerVersion.Itch, "8D5674E8????????8D15????????E8????????C605", 10));
-        //private static ProgramPointer AreaData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "8B3D????????3B770C720DB90D0000008D5109E8????????8B47043B70040F83", 2));
-        //private static ProgramPointer SaveData = new ProgramPointer(AutoDeref.Single, new ProgramSignature(PointerVersion.V1, "8B7C90088B432C8B40048D5B6C8B53043B500473368B7490088B15", 27));
+        private static ProgramPointer Celeste = new ProgramPointer(
+            new FindPointerSignature(PointerVersion.XNA, AutoDeref.Single, "83C604F30F7E06660FD6078BCBFF15????????8D15", 21),
+            new FindPointerSignature(PointerVersion.OpenGL, AutoDeref.Single, "8B55F08B45E88D5274E8????????8B45F08D15", 19),
+            new FindPointerSignature(PointerVersion.Itch, AutoDeref.Single, "8D5674E8????????8D15????????E8????????C605", 10));
         public Process Program { get; set; }
         public bool IsHooked { get; set; } = false;
         public DateTime LastHooked;
+        private bool? highPriority;
 
         public SplitterMemory() {
             LastHooked = DateTime.MinValue;
@@ -24,9 +22,15 @@ namespace LiveSplit.Celeste {
         public string RAMPointerVersion() {
             return Celeste.Version.ToString();
         }
+        public bool? IsHighPriority() {
+            return highPriority;
+        }
+        public void SetHighPriority(bool isHighPriority) {
+            if (!IsHooked || (highPriority.HasValue && highPriority.Value == isHighPriority)) { return; }
+            Program.PriorityClass = isHighPriority ? ProcessPriorityClass.High : ProcessPriorityClass.Normal;
+            highPriority = isHighPriority;
+        }
         public bool ChapterCompleted() {
-            //int minor = Celeste.Read<int>(Program, 0x0, 0x94, 0x8);
-            //int build = Celeste.Read<int>(Program, 0x0, 0x94, 0xc);
             //Celeste.Instance.AutosplitterInfo.ChapterComplete
             if (Celeste.Version == PointerVersion.XNA) {
                 return Celeste.Read<bool>(Program, 0x0, 0xac, 0x32);
@@ -130,25 +134,19 @@ namespace LiveSplit.Celeste {
             }
             return Menu.InGame;
         }
-        public bool HookProcess(bool setHighPriority) {
+        public bool HookProcess() {
             IsHooked = Program != null && !Program.HasExited;
             if (!IsHooked && DateTime.Now > LastHooked.AddSeconds(1)) {
                 LastHooked = DateTime.Now;
                 Program = Process.GetProcessesByName("Celeste").FirstOrDefault();
                 if (Program != null && !Program.HasExited) {
                     MemoryReader.Update64Bit(Program);
-                    if (setHighPriority) {
-                        Program.PriorityClass = ProcessPriorityClass.High;
-                    }
+                    highPriority = null;
                     IsHooked = true;
                 }
             }
 
             return IsHooked;
-        }
-        public void ToggleHighPriority(bool high) {
-            if (!IsHooked) { return; }
-            Program.PriorityClass = high ? ProcessPriorityClass.High : ProcessPriorityClass.Normal;
         }
         public void Dispose() {
             if (Program != null) {

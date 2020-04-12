@@ -9,7 +9,6 @@ namespace LiveSplit.Celeste {
     public partial class SplitterSettings : UserControl {
         public List<SplitInfo> Splits { get; private set; }
         public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority;
-        public event EventHandler HighPrioritySettingChanged;
         private bool isLoading;
         public SplitterSettings() {
             isLoading = true;
@@ -47,7 +46,7 @@ namespace LiveSplit.Celeste {
             }
 
             chkAutoReset.Checked = AutoReset;
-            chkSetHighPriority.Checked = SetHighPriority;
+            chkHighPriority.Checked = SetHighPriority;
             isLoading = false;
             this.flowMain.ResumeLayout(true);
         }
@@ -101,6 +100,7 @@ namespace LiveSplit.Celeste {
             ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
             ChapterSplits = chapterCount > 0 || heartCount > 0;
             AutoReset = chkAutoReset.Checked;
+            SetHighPriority = chkHighPriority.Checked;
         }
         public XmlNode UpdateSettings(XmlDocument document) {
             XmlElement xmlSettings = document.CreateElement("Settings");
@@ -158,14 +158,6 @@ namespace LiveSplit.Celeste {
 
             flowMain.Controls.Add(setting);
             UpdateSplits();
-        }
-        private void chkAutoReset_CheckedChanged(object sender, EventArgs e) {
-            UpdateSplits();
-        }
-        private void chkSetHighPriority_CheckedChanged(object sender, EventArgs e)
-        {
-            SetHighPriority = chkSetHighPriority.Checked;
-            HighPrioritySettingChanged?.Invoke(this, EventArgs.Empty);
         }
         private void btnChapterSplits_Click(object sender, EventArgs e) {
             if (Splits.Count > 0 && MessageBox.Show(this, "You already have some splits setup. This will clear anything you have and default in the Chapter splits.\r\n\r\nAre you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) {

@@ -26,7 +26,6 @@ namespace LiveSplit.Celeste {
         public SplitterComponent(LiveSplitState state) {
             mem = new SplitterMemory();
             settings = new SplitterSettings();
-            settings.HighPrioritySettingChanged += HighPrioritySettingChanged;
 
             foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
                 currentValues[key] = "";
@@ -53,7 +52,9 @@ namespace LiveSplit.Celeste {
         }
 
         public void GetValues() {
-            if (!mem.HookProcess(settings.SetHighPriority)) { return; }
+            if (!mem.HookProcess()) { return; }
+
+            mem.SetHighPriority(settings.SetHighPriority);
 
             if (Model != null) {
                 HandleSplits();
@@ -282,6 +283,10 @@ namespace LiveSplit.Celeste {
                         case LogObject.Strawberries: curr = mem.Strawberries().ToString(); break;
                         case LogObject.Cassettes: curr = mem.Cassettes().ToString(); break;
                         case LogObject.HeartGems: curr = mem.HeartGems().ToString(); break;
+                        case LogObject.HighPriority:
+                            bool? highPriority = mem.IsHighPriority();
+                            curr = highPriority.HasValue ? highPriority.Value.ToString() : "N/A";
+                            break;
                         default: curr = string.Empty; break;
                     }
 
@@ -345,10 +350,6 @@ namespace LiveSplit.Celeste {
                 }
             }
         }
-        private void HighPrioritySettingChanged(object sender, EventArgs e)
-        {
-            mem.ToggleHighPriority(settings.SetHighPriority);
-        }
         private void WriteLog(string data) {
             if (hasLog || !Console.IsOutputRedirected) {
                 if (Console.IsOutputRedirected) {
@@ -384,7 +385,6 @@ namespace LiveSplit.Celeste {
                 Model.CurrentState.OnUndoSplit -= OnUndoSplit;
                 Model.CurrentState.OnSkipSplit -= OnSkipSplit;
             }
-            settings.HighPrioritySettingChanged -= HighPrioritySettingChanged;
         }
     }
 }

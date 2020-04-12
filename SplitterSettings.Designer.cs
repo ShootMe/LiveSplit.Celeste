@@ -27,11 +27,10 @@
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
             this.flowOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.chkAutoReset = new System.Windows.Forms.CheckBox();
-            this.chkSetHighPriority = new System.Windows.Forms.CheckBox();
-            this.lblDefaultSplits = new System.Windows.Forms.Label();
             this.btnChapterSplits = new System.Windows.Forms.Button();
             this.btnChapterCheckpointSplits = new System.Windows.Forms.Button();
             this.btnABCSides = new System.Windows.Forms.Button();
+            this.chkHighPriority = new System.Windows.Forms.CheckBox();
             this.flowMain.SuspendLayout();
             this.flowOptions.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +57,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(473, 29);
+            this.flowMain.Size = new System.Drawing.Size(442, 29);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -70,14 +69,14 @@
             this.flowOptions.AutoSize = true;
             this.flowOptions.Controls.Add(this.btnAddSplit);
             this.flowOptions.Controls.Add(this.chkAutoReset);
-            this.flowOptions.Controls.Add(this.lblDefaultSplits);
+            this.flowOptions.Controls.Add(this.chkHighPriority);
             this.flowOptions.Controls.Add(this.btnChapterSplits);
             this.flowOptions.Controls.Add(this.btnChapterCheckpointSplits);
             this.flowOptions.Controls.Add(this.btnABCSides);
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(473, 29);
+            this.flowOptions.Size = new System.Drawing.Size(442, 29);
             this.flowOptions.TabIndex = 0;
             // 
             // chkAutoReset
@@ -89,21 +88,11 @@
             this.chkAutoReset.TabStop = false;
             this.chkAutoReset.Text = "Auto Reset ILs";
             this.chkAutoReset.UseVisualStyleBackColor = true;
-            this.chkAutoReset.CheckedChanged += new System.EventHandler(this.chkAutoReset_CheckedChanged);
-            // 
-            // lblDefaultSplits
-            // 
-            this.lblDefaultSplits.Location = new System.Drawing.Point(170, 0);
-            this.lblDefaultSplits.Name = "lblDefaultSplits";
-            this.lblDefaultSplits.Size = new System.Drawing.Size(44, 26);
-            this.lblDefaultSplits.TabIndex = 3;
-            this.lblDefaultSplits.Text = "Default:";
-            this.lblDefaultSplits.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.chkAutoReset.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
             // btnChapterSplits
             // 
-            this.btnChapterSplits.AutoSize = true;
-            this.btnChapterSplits.Location = new System.Drawing.Point(220, 3);
+            this.btnChapterSplits.Location = new System.Drawing.Point(259, 3);
             this.btnChapterSplits.Name = "btnChapterSplits";
             this.btnChapterSplits.Size = new System.Drawing.Size(54, 23);
             this.btnChapterSplits.TabIndex = 1;
@@ -114,27 +103,36 @@
             // 
             // btnChapterCheckpointSplits
             // 
-            this.btnChapterCheckpointSplits.AutoSize = true;
-            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(280, 3);
+            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(319, 3);
             this.btnChapterCheckpointSplits.Name = "btnChapterCheckpointSplits";
-            this.btnChapterCheckpointSplits.Size = new System.Drawing.Size(111, 23);
+            this.btnChapterCheckpointSplits.Size = new System.Drawing.Size(70, 23);
             this.btnChapterCheckpointSplits.TabIndex = 2;
             this.btnChapterCheckpointSplits.TabStop = false;
-            this.btnChapterCheckpointSplits.Text = "Chapter Checkpoint";
+            this.btnChapterCheckpointSplits.Text = "Checkpoint";
             this.btnChapterCheckpointSplits.UseVisualStyleBackColor = true;
             this.btnChapterCheckpointSplits.Click += new System.EventHandler(this.btnChapterCheckpointSplits_Click);
             // 
             // btnABCSides
             // 
-            this.btnABCSides.AutoSize = true;
-            this.btnABCSides.Location = new System.Drawing.Point(397, 3);
+            this.btnABCSides.Location = new System.Drawing.Point(395, 3);
             this.btnABCSides.Name = "btnABCSides";
-            this.btnABCSides.Size = new System.Drawing.Size(73, 23);
+            this.btnABCSides.Size = new System.Drawing.Size(44, 23);
             this.btnABCSides.TabIndex = 4;
             this.btnABCSides.TabStop = false;
-            this.btnABCSides.Text = "A B C Sides";
+            this.btnABCSides.Text = "A B C";
             this.btnABCSides.UseVisualStyleBackColor = true;
             this.btnABCSides.Click += new System.EventHandler(this.btnABCSides_Click);
+            // 
+            // chkHighPriority
+            // 
+            this.chkHighPriority.Location = new System.Drawing.Point(170, 3);
+            this.chkHighPriority.Name = "chkHighPriority";
+            this.chkHighPriority.Size = new System.Drawing.Size(83, 23);
+            this.chkHighPriority.TabIndex = 6;
+            this.chkHighPriority.TabStop = false;
+            this.chkHighPriority.Text = "High Priority";
+            this.chkHighPriority.UseVisualStyleBackColor = true;
+            this.chkHighPriority.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
             // SplitterSettings
             // 
@@ -146,7 +144,7 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SplitterSettings";
-            this.Size = new System.Drawing.Size(473, 29);
+            this.Size = new System.Drawing.Size(442, 29);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
@@ -162,10 +160,9 @@
         private System.Windows.Forms.FlowLayoutPanel flowMain;
         private System.Windows.Forms.FlowLayoutPanel flowOptions;
         private System.Windows.Forms.Button btnChapterSplits;
-        private System.Windows.Forms.Label lblDefaultSplits;
         private System.Windows.Forms.Button btnChapterCheckpointSplits;
         private System.Windows.Forms.Button btnABCSides;
         private System.Windows.Forms.CheckBox chkAutoReset;
-        private System.Windows.Forms.CheckBox chkSetHighPriority;
+        private System.Windows.Forms.CheckBox chkHighPriority;
     }
 }
