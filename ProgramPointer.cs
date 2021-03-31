@@ -4,7 +4,8 @@ namespace LiveSplit.Celeste {
     public enum PointerVersion {
         XNA,
         OpenGL,
-        Itch
+        Itch,
+        OpenGL14
     }
     public enum AutoDeref {
         None,
