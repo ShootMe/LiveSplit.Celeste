@@ -271,6 +271,7 @@ namespace LiveSplit.Celeste {
                         case LogObject.CurrentSplit: curr = currentSplit.ToString(); break;
                         case LogObject.Pointers: curr = mem.RAMPointers(); break;
                         case LogObject.PointerVersion: curr = mem.RAMPointerVersion(); break;
+                        case LogObject.CelesteFieldOffs: curr = mem.CelesteFieldOffs().ToString("X"); break;
                         case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
                         case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
                         case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
@@ -293,7 +294,7 @@ namespace LiveSplit.Celeste {
                     if (string.IsNullOrEmpty(prev)) { prev = string.Empty; }
                     if (string.IsNullOrEmpty(curr)) { curr = string.Empty; }
                     if (!prev.Equals(curr)) {
-                        WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key.ToString() + ": ".PadRight(16 - key.ToString().Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
+                        WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key.ToString() + ": ".PadRight(18 - key.ToString().Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
 
                         currentValues[key] = curr;
                     }
