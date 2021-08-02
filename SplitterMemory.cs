@@ -14,6 +14,9 @@ namespace LiveSplit.Celeste {
         public bool IsHooked { get; set; } = false;
         public DateTime LastHooked;
         private bool? highPriority;
+        private IntPtr LastCelesteOffsBase;
+        private int LastCelesteOffsSize;
+        private int LastCelesteOffs;
 
         public SplitterMemory() {
             LastHooked = DateTime.MinValue;
@@ -27,6 +30,35 @@ namespace LiveSplit.Celeste {
         public bool? IsHighPriority() {
             return highPriority;
         }
+        public int CelesteFieldOffs() {
+            IntPtr basePtr = Celeste.GetPointer(Program);
+            if (LastCelesteOffsBase == basePtr)
+                return LastCelesteOffs;
+            LastCelesteOffsBase = basePtr;
+            //Celeste.Instance.MethodTable.TypeSize
+            int size = Celeste.Read<int>(Program, 0x0, 0x0, 0x4);
+            if (LastCelesteOffsSize == size)
+                return LastCelesteOffs;
+            LastCelesteOffsSize = size;
+            //Scan backwards for field Title that points to string "Celeste"
+            //The Title field is the field that we could even care about after all the XNA / FNA Game fields.
+            //All other fields are then read with offsets relative to Celeste.Instance.Title
+            for (int offs = size - 4; offs >= 0; offs -= 4) {
+                //Celeste.Instance.OFFS
+                if (Celeste.Read(Program, 0x0, offs, 0x0) == "Celeste") {
+                    return LastCelesteOffs = offs;
+                }
+            }
+            //Fallback - retry scanning ASAP though.
+            LastCelesteOffsBase = IntPtr.Zero;
+            LastCelesteOffsSize = 0;
+            if (Celeste.Version == PointerVersion.XNA) {
+                return 0x90;
+            } else if (Celeste.Version == PointerVersion.OpenGL14) {
+                return 0x84;
+            }
+            return 0x70;
+        }
         public void SetHighPriority(bool isHighPriority) {
             if (!IsHooked || (highPriority.HasValue && highPriority.Value == isHighPriority)) { return; }
             Program.PriorityClass = isHighPriority ? ProcessPriorityClass.High : ProcessPriorityClass.Normal;
@@ -34,133 +66,60 @@ namespace LiveSplit.Celeste {
         }
         public bool ChapterCompleted() {
             //Celeste.Instance.AutosplitterInfo.ChapterComplete
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read<bool>(Program, 0x0, 0xac, 0x32);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read<bool>(Program, 0x0, 0xa0, 0x32);
-            }
-            return Celeste.Read<bool>(Program, 0x0, 0x8c, 0x32);
+            return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x32);
+
         }
         public string LevelName() {
             //Celeste.Instance.AutosplitterInfo.Level
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read(Program, 0x0, 0xac, 0x14, 0x0);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read(Program, 0x0, 0xa0, 0x14, 0x0);
-            }
-            return Celeste.Read(Program, 0x0, 0x8c, 0x14, 0x0);
+            return Celeste.Read(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x14, 0x0);
         }
         public Area AreaID() {
             //Celeste.Instance.AutosplitterInfo.Chapter
-            if (Celeste.Version == PointerVersion.XNA) {
-                return (Area)Celeste.Read<int>(Program, 0x0, 0xac, 0x18);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return (Area)Celeste.Read<int>(Program, 0x0, 0xa0, 0x18);
-            }
-            return (Area)Celeste.Read<int>(Program, 0x0, 0x8c, 0x18);
+            return (Area)Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x18);
         }
         public AreaMode AreaDifficulty() {
             //Celeste.Instance.AutosplitterInfo.Mode
-            if (Celeste.Version == PointerVersion.XNA) {
-                return (AreaMode)Celeste.Read<int>(Program, 0x0, 0xac, 0x1c);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return (AreaMode)Celeste.Read<int>(Program, 0x0, 0xa0, 0x1c);
-            }
-            return (AreaMode)Celeste.Read<int>(Program, 0x0, 0x8c, 0x1c);
+            return (AreaMode)Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x1c);
         }
         public bool ChapterStarted() {
             //Celeste.Instance.AutosplitterInfo.ChapterStarted
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read<bool>(Program, 0x0, 0xac, 0x31);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read<bool>(Program, 0x0, 0xa0, 0x31);
-            }
-            return Celeste.Read<bool>(Program, 0x0, 0x8c, 0x31);
+            return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x31);
         }
         public double GameTime() {
             //Celeste.Instance.AutosplitterInfo.FileTime
-            if (Celeste.Version == PointerVersion.XNA) {
-                return (double)Celeste.Read<long>(Program, 0x0, 0xac, 0xc) / (double)10000000;
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return (double)Celeste.Read<long>(Program, 0x0, 0xa0, 0xc) / (double)10000000;
-            }
-            return (double)Celeste.Read<long>(Program, 0x0, 0x8c, 0xc) / (double)10000000;
+            return (double)Celeste.Read<long>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0xc) / (double)10000000;
         }
         public double LevelTime() {
             //Celeste.Instance.AutosplitterInfo.ChapterTime
-            if (Celeste.Version == PointerVersion.XNA) {
-                return (double)Celeste.Read<long>(Program, 0x0, 0xac, 0x4) / (double)10000000;
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return (double)Celeste.Read<long>(Program, 0x0, 0xa0, 0x4) / (double)10000000;
-            }
-            return (double)Celeste.Read<long>(Program, 0x0, 0x8c, 0x4) / (double)10000000;
+            return (double)Celeste.Read<long>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x4) / (double)10000000;
         }
         public int Strawberries() {
             //Celeste.Instance.AutosplitterInfo.FileStrawberries
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read<int>(Program, 0x0, 0xac, 0x24);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read<int>(Program, 0x0, 0xa0, 0x24);
-            }
-            return Celeste.Read<int>(Program, 0x0, 0x8c, 0x24);
+            return Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x24);
         }
         public int Cassettes() {
             //Celeste.Instance.AutosplitterInfo.FileCassettes
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read<int>(Program, 0x0, 0xac, 0x28);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read<int>(Program, 0x0, 0xa0, 0x28);
-            }
-            return Celeste.Read<int>(Program, 0x0, 0x8c, 0x28);
+            return Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x28);
         }
         public int HeartGems() {
             //Celeste.Instance.AutosplitterInfo.FileHearts
-            if (Celeste.Version == PointerVersion.XNA) {
-                return Celeste.Read<int>(Program, 0x0, 0xac, 0x2c);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                return Celeste.Read<int>(Program, 0x0, 0xa0, 0x2c);
-            }
-            return Celeste.Read<int>(Program, 0x0, 0x8c, 0x2c);
+            return Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x2c);
         }
         public bool ShowInputUI() {
             //Celeste.Instance.scene.MethodTable.TypeSize
-            int size = 0;
-            if (Celeste.Version == PointerVersion.XNA) {
-                size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                size = Celeste.Read<int>(Program, 0x0, 0x8c, 0x0, 0x4);
-            } else {
-                size = Celeste.Read<int>(Program, 0x0, 0x78, 0x0, 0x4);
-            }
+            int size = Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x0, 0x4);
             if (size == 100) {
                 //((Overworld)Celeste.Instance.scene).showInputUI
-                if (Celeste.Version == PointerVersion.XNA) {
-                    return Celeste.Read<bool>(Program, 0x0, 0x98, 0x2b);
-                } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                    return Celeste.Read<bool>(Program, 0x0, 0x8c, 0x2b);
-                }
-                return Celeste.Read<bool>(Program, 0x0, 0x78, 0x2b);
+                return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x2b);
             }
             return false;
         }
         public Menu MenuType() {
             //Celeste.Instance.scene.MethodTable.TypeSize
-            int size = 0;
-            if (Celeste.Version == PointerVersion.XNA) {
-                size = Celeste.Read<int>(Program, 0x0, 0x98, 0x0, 0x4);
-            } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                size = Celeste.Read<int>(Program, 0x0, 0x8c, 0x0, 0x4);
-            } else {
-                size = Celeste.Read<int>(Program, 0x0, 0x78, 0x0, 0x4);
-            }
+            int size = Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x0, 0x4);
             if (size == 100) {
                 //((Overworld)Celeste.Instance.scene).current.MethodTable.TypeSize
-                if (Celeste.Version == PointerVersion.XNA) {
-                    return (Menu)Celeste.Read<int>(Program, 0x0, 0x98, 0x30, 0x0, 0x4);
-                } else if (Celeste.Version == PointerVersion.OpenGL14) {
-                    return (Menu)Celeste.Read<int>(Program, 0x0, 0x8c, 0x30, 0x0, 0x4);
-                }
-                return (Menu)Celeste.Read<int>(Program, 0x0, 0x78, 0x30, 0x0, 0x4);
+                return (Menu)Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x30, 0x0, 0x4);
             }
             return Menu.InGame;
         }

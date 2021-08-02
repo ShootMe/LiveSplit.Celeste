@@ -5,6 +5,7 @@ namespace LiveSplit.Celeste {
         CurrentSplit,
         Pointers,
         PointerVersion,
+        CelesteFieldOffs,
         GameTime,
         LevelTime,
         ShowInputUI,
