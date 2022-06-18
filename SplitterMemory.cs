@@ -114,14 +114,16 @@ namespace LiveSplit.Celeste {
             }
             return false;
         }
-        public Menu MenuType() {
+        public bool EnteringFirstChapter() {
             //Celeste.Instance.scene.MethodTable.TypeSize
             int size = Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x0, 0x4);
             if (size == 100) {
-                //((Overworld)Celeste.Instance.scene).current.MethodTable.TypeSize
-                return (Menu)Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x30, 0x0, 0x4);
+                //((Overworld)Celeste.Instance.scene).Maddy.MethodTable.TypeSize
+                int maddy3DSize = Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x4C, 0x0, 0x4);
+                //((Overworld)Celeste.Instance.scene).Maddy.Disabled
+                return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs() + 0x8, 0x4C, maddy3DSize - 0x1B);
             }
-            return Menu.InGame;
+            return false;
         }
         public bool HookProcess() {
             IsHooked = Program != null && !Program.HasExited;
