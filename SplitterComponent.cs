@@ -79,7 +79,7 @@ namespace LiveSplit.Celeste {
                 } else if (!settings.ILSplits) {
                     bool showInputUI = mem.ShowInputUI();
 
-                    shouldSplit = !showInputUI && lastShowInputUI && mem.MenuType() == Menu.FileSelect;
+                    shouldSplit = !showInputUI && lastShowInputUI && mem.EnteringFirstChapter();
 
                     lastShowInputUI = showInputUI;
                 } else {
@@ -275,12 +275,12 @@ namespace LiveSplit.Celeste {
                         case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
                         case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
                         case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
+                        case LogObject.EnteringFirstChapter: curr = mem.EnteringFirstChapter().ToString(); break;
                         case LogObject.Started: curr = mem.ChapterStarted().ToString(); break;
                         case LogObject.Completed: curr = mem.ChapterCompleted().ToString(); break;
                         case LogObject.AreaID: curr = mem.AreaID().ToString(); break;
                         case LogObject.AreaMode: curr = mem.AreaDifficulty().ToString(); break;
                         case LogObject.LevelName: curr = mem.LevelName(); break;
-                        case LogObject.Menu: curr = mem.MenuType().ToString(); break;
                         case LogObject.Strawberries: curr = mem.Strawberries().ToString(); break;
                         case LogObject.Cassettes: curr = mem.Cassettes().ToString(); break;
                         case LogObject.HeartGems: curr = mem.HeartGems().ToString(); break;
@@ -294,7 +294,7 @@ namespace LiveSplit.Celeste {
                     if (string.IsNullOrEmpty(prev)) { prev = string.Empty; }
                     if (string.IsNullOrEmpty(curr)) { curr = string.Empty; }
                     if (!prev.Equals(curr)) {
-                        WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key.ToString() + ": ".PadRight(18 - key.ToString().Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
+                        WriteLog(DateTime.Now.ToString(@"HH\:mm\:ss.fff") + (Model != null ? " | " + Model.CurrentState.CurrentTime.RealTime.Value.ToString("G").Substring(3, 11) : "") + ": " + key.ToString() + ": ".PadRight(22 - key.ToString().Length, ' ') + prev.PadLeft(25, ' ') + " -> " + curr);
 
                         currentValues[key] = curr;
                     }

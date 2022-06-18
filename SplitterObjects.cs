@@ -9,7 +9,7 @@ namespace LiveSplit.Celeste {
         GameTime,
         LevelTime,
         ShowInputUI,
-        Menu,
+        EnteringFirstChapter,
         Completed,
         Started,
         AreaID,
@@ -39,15 +39,6 @@ namespace LiveSplit.Celeste {
         ASide = 0,
         BSide = 1,
         CSide = 2
-    }
-    public enum Menu {
-        InGame = 0,
-        Intro = 14,
-        FileSelect = 60,
-        MainMenu = 64,
-        ChapterSelect = 80,
-        ChapterPanel = 168,
-        FileRename = 180
     }
     public enum SplitType {
         [Description("Manual Split (Not Automatic)")]
