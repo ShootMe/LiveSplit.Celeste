@@ -63,7 +63,7 @@ namespace LiveSplit.Celeste {
 						//case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
 						//case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
 						case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
-                        case LogObject.EnteringFirstChapter: curr = mem.EnteringFirstChapter().ToString(); break;
+						case LogObject.EnteringFirstChapter: curr = mem.EnteringFirstChapter().ToString(); break;
 						case LogObject.Started: curr = mem.ChapterStarted().ToString(); break;
 						case LogObject.AreaID: curr = mem.AreaID().ToString(); break;
 						case LogObject.AreaMode: curr = mem.AreaDifficulty().ToString(); break;
