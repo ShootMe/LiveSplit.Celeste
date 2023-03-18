@@ -153,24 +153,26 @@ namespace LiveSplit.Celeste {
                         default:
                             int cassettes = mem.Cassettes();
                             int heartGems = mem.HeartGems();
+                            bool chapterCassette = mem.ChapterCassetteCollected();
+                            bool chapterHeart = mem.ChapterHeartCollected();
                             switch (split.Type) {
-                                case SplitType.HeartGemAny: shouldSplit = heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter1Cassette: shouldSplit = areaID == Area.ForsakenCity && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter1HeartGem: shouldSplit = areaID == Area.ForsakenCity && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter2Cassette: shouldSplit = areaID == Area.OldSite && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter2HeartGem: shouldSplit = areaID == Area.OldSite && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter3Cassette: shouldSplit = areaID == Area.CelestialResort && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter3HeartGem: shouldSplit = areaID == Area.CelestialResort && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter4Cassette: shouldSplit = areaID == Area.GoldenRidge && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter4HeartGem: shouldSplit = areaID == Area.GoldenRidge && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter5Cassette: shouldSplit = areaID == Area.MirrorTemple && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter5HeartGem: shouldSplit = areaID == Area.MirrorTemple && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter6Cassette: shouldSplit = areaID == Area.Reflection && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter6HeartGem: shouldSplit = areaID == Area.Reflection && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter7Cassette: shouldSplit = areaID == Area.TheSummit && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter7HeartGem: shouldSplit = areaID == Area.TheSummit && heartGems == lastHeartGems + 1; break;
-                                case SplitType.Chapter8Cassette: shouldSplit = areaID == Area.Core && cassettes == lastCassettes + 1; break;
-                                case SplitType.Chapter8HeartGem: shouldSplit = areaID == Area.Core && heartGems == lastHeartGems + 1; break;
+                                case SplitType.HeartGemAny: shouldSplit = (settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1; break;
+                                case SplitType.Chapter1Cassette: shouldSplit = areaID == Area.ForsakenCity && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter1HeartGem: shouldSplit = areaID == Area.ForsakenCity && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter2Cassette: shouldSplit = areaID == Area.OldSite && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter2HeartGem: shouldSplit = areaID == Area.OldSite && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter3Cassette: shouldSplit = areaID == Area.CelestialResort && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter3HeartGem: shouldSplit = areaID == Area.CelestialResort && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter4Cassette: shouldSplit = areaID == Area.GoldenRidge && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter4HeartGem: shouldSplit = areaID == Area.GoldenRidge && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter5Cassette: shouldSplit = areaID == Area.MirrorTemple && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter5HeartGem: shouldSplit = areaID == Area.MirrorTemple && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter6Cassette: shouldSplit = areaID == Area.Reflection && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter6HeartGem: shouldSplit = areaID == Area.Reflection && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter7Cassette: shouldSplit = areaID == Area.TheSummit && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter7HeartGem: shouldSplit = areaID == Area.TheSummit && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
+                                case SplitType.Chapter8Cassette: shouldSplit = areaID == Area.Core && ((settings.ILSplits && chapterCassette) || cassettes == lastCassettes + 1); break;
+                                case SplitType.Chapter8HeartGem: shouldSplit = areaID == Area.Core && ((settings.ILSplits && chapterHeart) || heartGems == lastHeartGems + 1); break;
                             }
                             lastCassettes = cassettes;
                             lastHeartGems = heartGems;
@@ -283,7 +285,9 @@ namespace LiveSplit.Celeste {
                         case LogObject.LevelName: curr = mem.LevelName(); break;
                         case LogObject.Strawberries: curr = mem.Strawberries().ToString(); break;
                         case LogObject.Cassettes: curr = mem.Cassettes().ToString(); break;
+                        case LogObject.ChapterCassette: curr = mem.ChapterCassetteCollected().ToString(); break;
                         case LogObject.HeartGems: curr = mem.HeartGems().ToString(); break;
+                        case LogObject.ChapterHeart: curr = mem.ChapterHeartCollected().ToString(); break;
                         case LogObject.HighPriority:
                             bool? highPriority = mem.IsHighPriority();
                             curr = highPriority.HasValue ? highPriority.Value.ToString() : "N/A";

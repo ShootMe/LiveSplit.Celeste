@@ -18,6 +18,8 @@ namespace LiveSplit.Celeste {
         Strawberries,
         HeartGems,
         Cassettes,
+        ChapterCassette,
+        ChapterHeart,
         HighPriority
     }
     public enum Area {

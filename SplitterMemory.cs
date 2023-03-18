@@ -101,9 +101,17 @@ namespace LiveSplit.Celeste {
             //Celeste.Instance.AutosplitterInfo.FileCassettes
             return Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x28);
         }
+        public bool ChapterCassetteCollected() {
+            //Celeste.Instance.AutosplitterInfo.ChapterCassette
+            return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x33);
+        }
         public int HeartGems() {
             //Celeste.Instance.AutosplitterInfo.FileHearts
             return Celeste.Read<int>(Program, 0x0, CelesteFieldOffs() + 0x1c, 0x2c);
+        }
+        public bool ChapterHeartCollected() {
+            //Celeste.Instance.AutosplitterInfo.ChapterHeart
+            return Celeste.Read<bool>(Program, 0x0, CelesteFieldOffs()+ 0x1c, 0x34);
         }
         public bool ShowInputUI() {
             //Celeste.Instance.scene.MethodTable.TypeSize
