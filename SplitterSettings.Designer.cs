@@ -61,7 +61,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(1052, 56);
+            this.flowMain.Size = new System.Drawing.Size(680, 112);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -80,8 +80,9 @@
             this.flowOptions.Controls.Add(this.btnABCSides);
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
+            this.flowOptions.MaximumSize = new System.Drawing.Size(775, 0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(1052, 56);
+            this.flowOptions.Size = new System.Drawing.Size(680, 112);
             this.flowOptions.TabIndex = 0;
             // 
             // chkAutoReset
@@ -125,7 +126,7 @@
             // 
             // btnChapterSplits
             // 
-            this.btnChapterSplits.Location = new System.Drawing.Point(686, 6);
+            this.btnChapterSplits.Location = new System.Drawing.Point(6, 62);
             this.btnChapterSplits.Margin = new System.Windows.Forms.Padding(6);
             this.btnChapterSplits.Name = "btnChapterSplits";
             this.btnChapterSplits.Size = new System.Drawing.Size(108, 44);
@@ -137,7 +138,7 @@
             // 
             // btnChapterCheckpointSplits
             // 
-            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(806, 6);
+            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(126, 62);
             this.btnChapterCheckpointSplits.Margin = new System.Windows.Forms.Padding(6);
             this.btnChapterCheckpointSplits.Name = "btnChapterCheckpointSplits";
             this.btnChapterCheckpointSplits.Size = new System.Drawing.Size(140, 44);
@@ -149,7 +150,7 @@
             // 
             // btnABCSides
             // 
-            this.btnABCSides.Location = new System.Drawing.Point(958, 6);
+            this.btnABCSides.Location = new System.Drawing.Point(278, 62);
             this.btnABCSides.Margin = new System.Windows.Forms.Padding(6);
             this.btnABCSides.Name = "btnABCSides";
             this.btnABCSides.Size = new System.Drawing.Size(88, 44);
@@ -173,7 +174,7 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SplitterSettings";
-            this.Size = new System.Drawing.Size(1052, 56);
+            this.Size = new System.Drawing.Size(680, 112);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
