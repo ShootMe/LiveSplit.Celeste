@@ -8,7 +8,7 @@ using System.Xml;
 namespace LiveSplit.Celeste {
     public partial class SplitterSettings : UserControl {
         public List<SplitInfo> Splits { get; private set; }
-        public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority;
+        public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority, SetGameTime;
         private bool isLoading;
         public SplitterSettings() {
             isLoading = true;
@@ -19,6 +19,7 @@ namespace LiveSplit.Celeste {
             ChapterSplits = false;
             AutoReset = true;
             SetHighPriority = true;
+            SetGameTime = true;
 
             isLoading = false;
         }
@@ -47,6 +48,7 @@ namespace LiveSplit.Celeste {
 
             chkAutoReset.Checked = AutoReset;
             chkHighPriority.Checked = SetHighPriority;
+            chkGameTime.Checked = SetGameTime;
             isLoading = false;
             this.flowMain.ResumeLayout(true);
         }
@@ -79,6 +81,7 @@ namespace LiveSplit.Celeste {
 
             int chapterCount = 0;
             int heartCount = 0;
+            int cassetteCount = 0;
             Splits.Clear();
             foreach (Control control in flowMain.Controls) {
                 if (control is SplitterSplitSettings) {
@@ -93,14 +96,17 @@ namespace LiveSplit.Celeste {
                             chapterCount++;
                         } else if (type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
                             heartCount++;
+                        } else if (type.ToString().IndexOf("Cassette", StringComparison.OrdinalIgnoreCase) >= 0) {
+                            cassetteCount++;
                         }
                     }
                 }
             }
-            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
-            ChapterSplits = chapterCount > 0 || heartCount > 0;
+            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1 && cassetteCount <= 1);
+            ChapterSplits = chapterCount > 0 || heartCount > 0 || cassetteCount > 0;
             AutoReset = chkAutoReset.Checked;
             SetHighPriority = chkHighPriority.Checked;
+            SetGameTime = chkGameTime.Checked;
         }
         public XmlNode UpdateSettings(XmlDocument document) {
             XmlElement xmlSettings = document.CreateElement("Settings");
@@ -112,6 +118,10 @@ namespace LiveSplit.Celeste {
             XmlElement xmlHighPriority = document.CreateElement("SetHighPriority");
             xmlHighPriority.InnerText = SetHighPriority.ToString();
             xmlSettings.AppendChild(xmlHighPriority);
+
+            XmlElement xmlGameTime = document.CreateElement("SetGameTime");
+            xmlGameTime.InnerText = SetGameTime.ToString();
+            xmlSettings.AppendChild(xmlGameTime);
 
             XmlElement xmlSplits = document.CreateElement("Splits");
             xmlSettings.AppendChild(xmlSplits);
@@ -127,6 +137,7 @@ namespace LiveSplit.Celeste {
         public void SetSettings(XmlNode settings) {
             int chapterCount = 0;
             int heartCount = 0;
+            int cassetteCount = 0;
             Splits.Clear();
 
             XmlNode resetNode = settings.SelectSingleNode(".//AutoReset");
@@ -134,6 +145,9 @@ namespace LiveSplit.Celeste {
 
             XmlNode highPriorityNode = settings.SelectSingleNode(".//SetHighPriority");
             SetHighPriority = !string.IsNullOrEmpty(highPriorityNode?.InnerText) ? bool.Parse(highPriorityNode.InnerText) : true;
+
+            XmlNode gameTimeNode = settings.SelectSingleNode(".//SetGameTime");
+            SetGameTime = !string.IsNullOrEmpty(gameTimeNode?.InnerText) ? bool.Parse(gameTimeNode.InnerText) : true;
 
             XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
             foreach (XmlNode splitNode in splitNodes) {
@@ -144,10 +158,12 @@ namespace LiveSplit.Celeste {
                     chapterCount++;
                 } else if (split.Type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
                     heartCount++;
+                } else if (split.Type.ToString().IndexOf("Cassette", StringComparison.OrdinalIgnoreCase) >= 0) {
+                    cassetteCount++;
                 }
             }
-            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
-            ChapterSplits = chapterCount > 0 || heartCount > 0;
+            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1 && cassetteCount <= 1);
+            ChapterSplits = chapterCount > 0 || heartCount > 0 || cassetteCount > 0;
         }
         private void btnAddSplit_Click(object sender, EventArgs e) {
             SplitterSplitSettings setting = new SplitterSplitSettings();

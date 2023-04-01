@@ -23,15 +23,17 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.btnAddSplit = new System.Windows.Forms.Button();
             this.flowMain = new System.Windows.Forms.FlowLayoutPanel();
             this.flowOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.chkAutoReset = new System.Windows.Forms.CheckBox();
             this.chkHighPriority = new System.Windows.Forms.CheckBox();
+            this.chkGameTime = new System.Windows.Forms.CheckBox();
             this.btnChapterSplits = new System.Windows.Forms.Button();
             this.btnChapterCheckpointSplits = new System.Windows.Forms.Button();
             this.btnABCSides = new System.Windows.Forms.Button();
-            this.toolTip1 = new System.Windows.Forms.ToolTip();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.flowMain.SuspendLayout();
             this.flowOptions.SuspendLayout();
             this.SuspendLayout();
@@ -42,7 +44,7 @@
             this.btnAddSplit.Location = new System.Drawing.Point(6, 6);
             this.btnAddSplit.Margin = new System.Windows.Forms.Padding(6);
             this.btnAddSplit.Name = "btnAddSplit";
-            this.btnAddSplit.Size = new System.Drawing.Size(59, 23);
+            this.btnAddSplit.Size = new System.Drawing.Size(108, 35);
             this.btnAddSplit.TabIndex = 0;
             this.btnAddSplit.Text = "Add Split";
             this.btnAddSplit.UseVisualStyleBackColor = true;
@@ -59,7 +61,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(874, 56);
+            this.flowMain.Size = new System.Drawing.Size(1052, 56);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -72,13 +74,14 @@
             this.flowOptions.Controls.Add(this.btnAddSplit);
             this.flowOptions.Controls.Add(this.chkAutoReset);
             this.flowOptions.Controls.Add(this.chkHighPriority);
+            this.flowOptions.Controls.Add(this.chkGameTime);
             this.flowOptions.Controls.Add(this.btnChapterSplits);
             this.flowOptions.Controls.Add(this.btnChapterCheckpointSplits);
             this.flowOptions.Controls.Add(this.btnABCSides);
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(874, 56);
+            this.flowOptions.Size = new System.Drawing.Size(1052, 56);
             this.flowOptions.TabIndex = 0;
             // 
             // chkAutoReset
@@ -107,9 +110,22 @@
             this.chkHighPriority.UseVisualStyleBackColor = true;
             this.chkHighPriority.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
+            // chkGameTime
+            // 
+            this.chkGameTime.Location = new System.Drawing.Point(508, 6);
+            this.chkGameTime.Margin = new System.Windows.Forms.Padding(6);
+            this.chkGameTime.Name = "chkGameTime";
+            this.chkGameTime.Size = new System.Drawing.Size(166, 44);
+            this.chkGameTime.TabIndex = 7;
+            this.chkGameTime.TabStop = false;
+            this.chkGameTime.Text = "Game Time";
+            this.toolTip1.SetToolTip(this.chkGameTime, "Automatically set Livesplit to use Game Time");
+            this.chkGameTime.UseVisualStyleBackColor = true;
+            this.chkGameTime.CheckedChanged += new System.EventHandler(this.ControlChanged);
+            // 
             // btnChapterSplits
             // 
-            this.btnChapterSplits.Location = new System.Drawing.Point(508, 6);
+            this.btnChapterSplits.Location = new System.Drawing.Point(686, 6);
             this.btnChapterSplits.Margin = new System.Windows.Forms.Padding(6);
             this.btnChapterSplits.Name = "btnChapterSplits";
             this.btnChapterSplits.Size = new System.Drawing.Size(108, 44);
@@ -121,7 +137,7 @@
             // 
             // btnChapterCheckpointSplits
             // 
-            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(628, 6);
+            this.btnChapterCheckpointSplits.Location = new System.Drawing.Point(806, 6);
             this.btnChapterCheckpointSplits.Margin = new System.Windows.Forms.Padding(6);
             this.btnChapterCheckpointSplits.Name = "btnChapterCheckpointSplits";
             this.btnChapterCheckpointSplits.Size = new System.Drawing.Size(140, 44);
@@ -133,7 +149,7 @@
             // 
             // btnABCSides
             // 
-            this.btnABCSides.Location = new System.Drawing.Point(780, 6);
+            this.btnABCSides.Location = new System.Drawing.Point(958, 6);
             this.btnABCSides.Margin = new System.Windows.Forms.Padding(6);
             this.btnABCSides.Name = "btnABCSides";
             this.btnABCSides.Size = new System.Drawing.Size(88, 44);
@@ -157,7 +173,7 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SplitterSettings";
-            this.Size = new System.Drawing.Size(874, 56);
+            this.Size = new System.Drawing.Size(1052, 56);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
@@ -178,5 +194,6 @@
         private System.Windows.Forms.CheckBox chkAutoReset;
         private System.Windows.Forms.CheckBox chkHighPriority;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox chkGameTime;
     }
 }
