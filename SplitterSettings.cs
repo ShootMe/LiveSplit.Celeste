@@ -148,7 +148,7 @@ namespace LiveSplit.Celeste {
                     chapterCount++;
                 } else if (split.Type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
                     heartCount++;
-                } else if (split.Type.ToString().IndexOf("Area", StringComparison.OrdinalIgnoreCase) >= 0) {
+                } else if (split.Type.ToString().IndexOf("AreaComplete", StringComparison.OrdinalIgnoreCase) >= 0) {
                     areaCount++;
                 }
             }
