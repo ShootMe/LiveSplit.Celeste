@@ -47,6 +47,8 @@ namespace LiveSplit.Celeste {
         Manual,
         [Description("Any Chapter (Complete)")]
         ChapterA,
+        [Description("Area (Complete)")]
+        AreaComplete,
         [Description("Area (On Enter)")]
         AreaEnter,
         [Description("Area (On Exit)")]
