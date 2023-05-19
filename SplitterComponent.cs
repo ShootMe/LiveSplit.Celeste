@@ -18,7 +18,7 @@ namespace LiveSplit.Celeste {
         private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
         private SplitterMemory mem;
         private SplitterSettings settings;
-        private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
+        private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes, lastAreaID, lastAreaDifficulty;
         private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
         private double lastElapsed, levelTimer;
         private string lastLevelName, levelStarted;
@@ -93,6 +93,7 @@ namespace LiveSplit.Celeste {
                 double elapsed = settings.ILSplits ? mem.LevelTime() : mem.GameTime();
                 bool completed = mem.ChapterCompleted();
                 Area areaID = mem.AreaID();
+                AreaMode areaDifficulty = mem.AreaDifficulty();
                 int addAmount = settings.Splits.Count > 0 && !settings.ChapterSplits ? 1 : 0;
                 SplitInfo split = currentSplit + addAmount < settings.Splits.Count ? settings.Splits[currentSplit + addAmount] : null;
                 string levelName = mem.LevelName();
@@ -106,6 +107,8 @@ namespace LiveSplit.Celeste {
                     switch (split.Type) {
                         case SplitType.LevelEnter: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && levelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
                         case SplitType.LevelExit: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && lastLevelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
+                        case SplitType.AreaEnter: shouldSplit = AreaSplit(split, (int)areaID, (int)areaID, (int)areaDifficulty, (int)areaDifficulty); break;
+                        case SplitType.AreaExit: shouldSplit = AreaSplit(split, (int)areaID, lastAreaID, (int)areaDifficulty, lastAreaDifficulty); break;
                         case SplitType.ChapterA: shouldSplit = ChapterSplit(Area.Prologue, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, levelName, completed, elapsed); break;
@@ -118,13 +121,13 @@ namespace LiveSplit.Celeste {
                         case SplitType.Epilogue: shouldSplit = ChapterSplit(areaID, Area.Epilogue, levelName, completed, elapsed); break;
                         case SplitType.Chapter8: shouldSplit = ChapterSplit(areaID, Area.Core, levelName, completed, elapsed); break;
                         case SplitType.Chapter9: shouldSplit = ChapterSplit(areaID, Area.Farewell, levelName, completed, elapsed); break;
-                        case SplitType.Chapter1Checkpoint1: shouldSplit = areaID == Area.ForsakenCity && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "6" : "04"); break;
-                        case SplitType.Chapter1Checkpoint2: shouldSplit = areaID == Area.ForsakenCity && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "9b" : "08"); break;
-                        case SplitType.Chapter2Checkpoint1: shouldSplit = areaID == Area.OldSite && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "3" : "03"); break;
-                        case SplitType.Chapter2Checkpoint2: shouldSplit = areaID == Area.OldSite && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "end_3" : "08b"); break;
-                        case SplitType.Chapter3Checkpoint1: shouldSplit = areaID == Area.CelestialResort && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "08-a" : "06"); break;
-                        case SplitType.Chapter3Checkpoint2: shouldSplit = areaID == Area.CelestialResort && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "09-d" : "11"); break;
-                        case SplitType.Chapter3Checkpoint3: shouldSplit = areaID == Area.CelestialResort && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "00-d" : "16"); break;
+                        case SplitType.Chapter1Checkpoint1: shouldSplit = areaID == Area.ForsakenCity && levelName == (areaDifficulty == AreaMode.ASide ? "6" : "04"); break;
+                        case SplitType.Chapter1Checkpoint2: shouldSplit = areaID == Area.ForsakenCity && levelName == (areaDifficulty == AreaMode.ASide ? "9b" : "08"); break;
+                        case SplitType.Chapter2Checkpoint1: shouldSplit = areaID == Area.OldSite && levelName == (areaDifficulty == AreaMode.ASide ? "3" : "03"); break;
+                        case SplitType.Chapter2Checkpoint2: shouldSplit = areaID == Area.OldSite && levelName == (areaDifficulty == AreaMode.ASide ? "end_3" : "08b"); break;
+                        case SplitType.Chapter3Checkpoint1: shouldSplit = areaID == Area.CelestialResort && levelName == (areaDifficulty == AreaMode.ASide ? "08-a" : "06"); break;
+                        case SplitType.Chapter3Checkpoint2: shouldSplit = areaID == Area.CelestialResort && levelName == (areaDifficulty == AreaMode.ASide ? "09-d" : "11"); break;
+                        case SplitType.Chapter3Checkpoint3: shouldSplit = areaID == Area.CelestialResort && levelName == (areaDifficulty == AreaMode.ASide ? "00-d" : "16"); break;
                         case SplitType.Chapter4Checkpoint1: shouldSplit = areaID == Area.GoldenRidge && levelName == "b-00"; break;
                         case SplitType.Chapter4Checkpoint2: shouldSplit = areaID == Area.GoldenRidge && levelName == "c-00"; break;
                         case SplitType.Chapter4Checkpoint3: shouldSplit = areaID == Area.GoldenRidge && levelName == "d-00"; break;
@@ -132,20 +135,20 @@ namespace LiveSplit.Celeste {
                         case SplitType.Chapter5Checkpoint2: shouldSplit = areaID == Area.MirrorTemple && levelName == "c-00"; break;
                         case SplitType.Chapter5Checkpoint3: shouldSplit = areaID == Area.MirrorTemple && levelName == "d-00"; break;
                         case SplitType.Chapter5Checkpoint4: shouldSplit = areaID == Area.MirrorTemple && levelName == "e-00"; break;
-                        case SplitType.Chapter6Checkpoint1: shouldSplit = areaID == Area.Reflection && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "00" : "b-00"); break;
-                        case SplitType.Chapter6Checkpoint2: shouldSplit = areaID == Area.Reflection && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "04" : "c-00"); break;
-                        case SplitType.Chapter6Checkpoint3: shouldSplit = areaID == Area.Reflection && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "b-00" : "d-00"); break;
+                        case SplitType.Chapter6Checkpoint1: shouldSplit = areaID == Area.Reflection && levelName == (areaDifficulty  == AreaMode.ASide ? "00" : "b-00"); break;
+                        case SplitType.Chapter6Checkpoint2: shouldSplit = areaID == Area.Reflection && levelName == (areaDifficulty == AreaMode.ASide ? "04" : "c-00"); break;
+                        case SplitType.Chapter6Checkpoint3: shouldSplit = areaID == Area.Reflection && levelName == (areaDifficulty == AreaMode.ASide ? "b-00" : "d-00"); break;
                         case SplitType.Chapter6Checkpoint4: shouldSplit = areaID == Area.Reflection && levelName == "boss-00"; break;
                         case SplitType.Chapter6Checkpoint5: shouldSplit = areaID == Area.Reflection && levelName == "after-00"; break;
                         case SplitType.Chapter7Checkpoint1: shouldSplit = areaID == Area.TheSummit && levelName == "b-00"; break;
-                        case SplitType.Chapter7Checkpoint2: shouldSplit = areaID == Area.TheSummit && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "c-01"); break;
+                        case SplitType.Chapter7Checkpoint2: shouldSplit = areaID == Area.TheSummit && levelName == (areaDifficulty == AreaMode.ASide ? "c-00" : "c-01"); break;
                         case SplitType.Chapter7Checkpoint3: shouldSplit = areaID == Area.TheSummit && levelName == "d-00"; break;
-                        case SplitType.Chapter7Checkpoint4: shouldSplit = areaID == Area.TheSummit && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "e-00b" : "e-00"); break;
+                        case SplitType.Chapter7Checkpoint4: shouldSplit = areaID == Area.TheSummit && levelName == (areaDifficulty == AreaMode.ASide ? "e-00b" : "e-00"); break;
                         case SplitType.Chapter7Checkpoint5: shouldSplit = areaID == Area.TheSummit && levelName == "f-00"; break;
                         case SplitType.Chapter7Checkpoint6: shouldSplit = areaID == Area.TheSummit && levelName == "g-00"; break;
                         case SplitType.Chapter8Checkpoint1: shouldSplit = areaID == Area.Core && levelName == "a-00"; break;
-                        case SplitType.Chapter8Checkpoint2: shouldSplit = areaID == Area.Core && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "c-00" : "b-00"); break;
-                        case SplitType.Chapter8Checkpoint3: shouldSplit = areaID == Area.Core && levelName == (mem.AreaDifficulty() == AreaMode.ASide ? "d-00" : "c-01"); break;
+                        case SplitType.Chapter8Checkpoint2: shouldSplit = areaID == Area.Core && levelName == (areaDifficulty == AreaMode.ASide ? "c-00" : "b-00"); break;
+                        case SplitType.Chapter8Checkpoint3: shouldSplit = areaID == Area.Core && levelName == (areaDifficulty == AreaMode.ASide ? "d-00" : "c-01"); break;
                         case SplitType.Chapter9Checkpoint1: shouldSplit = areaID == Area.Farewell && levelName == "a-00"; break;
                         case SplitType.Chapter9Checkpoint2: shouldSplit = areaID == Area.Farewell && levelName == "c-00"; break;
                         case SplitType.Chapter9Checkpoint3: shouldSplit = areaID == Area.Farewell && levelName == "e-00z"; break;
@@ -174,6 +177,8 @@ namespace LiveSplit.Celeste {
                     }
                     lastCassettes = cassettes;
                     lastHeartGems = heartGems;
+                    lastAreaID = (int)areaID;
+                    lastAreaDifficulty = (int)areaDifficulty;
                 } else if (split == null && Model.CurrentState.Run.Count == 1) {
                     if (levelName == levelStarted && elapsed - levelTimer < 2.5) {
                         levelStarted = lastLevelName;
@@ -211,6 +216,11 @@ namespace LiveSplit.Celeste {
                 return exitingChapter && settings.ILSplits;
             }
             return !completed && lastCompleted;
+        }
+        private bool AreaSplit(SplitInfo split, int currAreaID, int areaIDToCheck, int currAreaDifficulty, int areaDifficultyToCheck) {
+            string[] splitInfo = split.Value.Split('-');
+            return int.TryParse(splitInfo[0].Trim(), out int splitAreaID) && currAreaID != lastAreaID && areaIDToCheck == splitAreaID &&
+                (splitInfo.Length == 1 || (int.TryParse(splitInfo[1].Trim(), out int splitAreaDifficulty) && currAreaDifficulty != lastAreaDifficulty && areaDifficultyToCheck == splitAreaDifficulty));
         }
         private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
             if (shouldReset) {

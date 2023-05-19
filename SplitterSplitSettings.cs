@@ -22,7 +22,7 @@ namespace LiveSplit.Celeste {
         private void cboType_SelectedIndexChanged(object sender, EventArgs e) {
             string splitDescription = cboType.SelectedValue.ToString();
             SplitType split = GetEnumValue<SplitType>(splitDescription);
-            if (split != SplitType.LevelExit && split != SplitType.LevelEnter) {
+            if (split != SplitType.LevelExit && split != SplitType.LevelEnter && split != SplitType.AreaExit && split != SplitType.AreaEnter) {
                 txtLevel.Visible = false;
                 txtLevel.Text = string.Empty;
                 cboType.Size = new System.Drawing.Size(313, 21);
