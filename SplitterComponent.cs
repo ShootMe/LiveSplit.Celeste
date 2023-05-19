@@ -222,16 +222,16 @@ namespace LiveSplit.Celeste {
         }
         private bool AreaCompleteSplit(SplitInfo split, Area areaID, string level, bool completed, double elapsed) {
             string[] splitInfo = split.Value.Split('-');
-            if (Enum.TryParse(splitInfo[0].Trim(), out Area splitAreaID)) {
+            if (Enum.TryParse(splitInfo[0].Trim(), true, out Area splitAreaID)) {
                 return ChapterSplit(areaID, splitAreaID, level, completed, elapsed) &&
-                    (splitInfo.Length == 1 || (Enum.TryParse(splitInfo[1].Trim(), out AreaMode splitAreaDifficulty) && lastAreaDifficulty == splitAreaDifficulty));
+                    (splitInfo.Length == 1 || (Enum.TryParse(splitInfo[1].Trim(), true, out AreaMode splitAreaDifficulty) && lastAreaDifficulty == splitAreaDifficulty));
             }
             return false;
         }
         private bool AreaChangeSplit(SplitInfo split, Area currAreaID, Area areaIDToCheck, AreaMode currAreaDifficulty, AreaMode areaDifficultyToCheck) {
             string[] splitInfo = split.Value.Split('-');
-            return Enum.TryParse(splitInfo[0].Trim(), out Area splitAreaID) && currAreaID != lastAreaID && areaIDToCheck == splitAreaID &&
-                (splitInfo.Length == 1 || (Enum.TryParse(splitInfo[1].Trim(), out AreaMode splitAreaDifficulty) && currAreaDifficulty != lastAreaDifficulty && areaDifficultyToCheck == splitAreaDifficulty));
+            return Enum.TryParse(splitInfo[0].Trim(), true, out Area splitAreaID) && currAreaID != lastAreaID && areaIDToCheck == splitAreaID &&
+                (splitInfo.Length == 1 || (Enum.TryParse(splitInfo[1].Trim(), true, out AreaMode splitAreaDifficulty) && currAreaDifficulty != lastAreaDifficulty && areaDifficultyToCheck == splitAreaDifficulty));
         }
         private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
             if (shouldReset) {
