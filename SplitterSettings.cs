@@ -79,6 +79,7 @@ namespace LiveSplit.Celeste {
 
             int chapterCount = 0;
             int heartCount = 0;
+            int areaCount = 0;
             Splits.Clear();
             foreach (Control control in flowMain.Controls) {
                 if (control is SplitterSplitSettings) {
@@ -93,12 +94,14 @@ namespace LiveSplit.Celeste {
                             chapterCount++;
                         } else if (type.ToString().IndexOf("HeartGem", StringComparison.OrdinalIgnoreCase) >= 0) {
                             heartCount++;
+                        } else if (type.ToString().IndexOf("Area", StringComparison.OrdinalIgnoreCase) >= 0) {
+                            areaCount++;
                         }
                     }
                 }
             }
-            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1);
-            ChapterSplits = chapterCount > 0 || heartCount > 0;
+            ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1 && areaCount <= 1);
+            ChapterSplits = chapterCount > 0 || heartCount > 0 || areaCount > 0;
             AutoReset = chkAutoReset.Checked;
             SetHighPriority = chkHighPriority.Checked;
         }
