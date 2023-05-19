@@ -50,9 +50,9 @@ namespace LiveSplit.Celeste {
         [Description("Area (Complete)")]
         AreaComplete,
         [Description("Area (On Enter)")]
-        AreaEnter,
+        AreaOnEnter,
         [Description("Area (On Exit)")]
-        AreaExit,
+        AreaOnExit,
         [Description("Any Heart Gem (Pickup)")]
         HeartGemAny,
         [Description("Level (On Enter)")]

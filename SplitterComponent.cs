@@ -111,8 +111,8 @@ namespace LiveSplit.Celeste {
                         case SplitType.LevelExit: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && lastLevelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
                         case SplitType.ChapterA: shouldSplit = ChapterSplit(Area.Prologue, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.AreaComplete: shouldSplit = AreaCompleteSplit(split, areaID, levelName, completed, elapsed); break;
-                        case SplitType.AreaEnter: shouldSplit = AreaChangeSplit(split, areaID, areaID, areaDifficulty, areaDifficulty); break;
-                        case SplitType.AreaExit: shouldSplit = AreaChangeSplit(split, areaID, lastAreaID, areaDifficulty, lastAreaDifficulty); break;
+                        case SplitType.AreaOnEnter: shouldSplit = AreaChangeSplit(split, areaID, areaID, areaDifficulty, areaDifficulty); break;
+                        case SplitType.AreaOnExit: shouldSplit = AreaChangeSplit(split, areaID, lastAreaID, areaDifficulty, lastAreaDifficulty); break;
                         case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, levelName, completed, elapsed); break;
                         case SplitType.Chapter2: shouldSplit = ChapterSplit(areaID, Area.OldSite, levelName, completed, elapsed); break;
