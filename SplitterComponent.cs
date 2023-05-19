@@ -18,10 +18,12 @@ namespace LiveSplit.Celeste {
         private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
         private SplitterMemory mem;
         private SplitterSettings settings;
-        private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes, lastAreaID, lastAreaDifficulty;
+        private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
         private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
         private double lastElapsed, levelTimer;
         private string lastLevelName, levelStarted;
+        private Area lastAreaID;
+        private AreaMode lastAreaDifficulty;
 
         public SplitterComponent(LiveSplitState state) {
             mem = new SplitterMemory();
@@ -107,9 +109,9 @@ namespace LiveSplit.Celeste {
                     switch (split.Type) {
                         case SplitType.LevelEnter: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && levelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
                         case SplitType.LevelExit: shouldSplit = areaID != Area.Menu && levelName != lastLevelName && lastLevelName.Equals(split.Value, StringComparison.OrdinalIgnoreCase); break;
-                        case SplitType.AreaEnter: shouldSplit = AreaSplit(split, (int)areaID, (int)areaID, (int)areaDifficulty, (int)areaDifficulty); break;
-                        case SplitType.AreaExit: shouldSplit = AreaSplit(split, (int)areaID, lastAreaID, (int)areaDifficulty, lastAreaDifficulty); break;
                         case SplitType.ChapterA: shouldSplit = ChapterSplit(Area.Prologue, Area.Prologue, levelName, completed, elapsed); break;
+                        case SplitType.AreaEnter: shouldSplit = AreaChangeSplit(split, areaID, areaID, areaDifficulty, areaDifficulty); break;
+                        case SplitType.AreaExit: shouldSplit = AreaChangeSplit(split, areaID, lastAreaID, areaDifficulty, lastAreaDifficulty); break;
                         case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, levelName, completed, elapsed); break;
                         case SplitType.Chapter2: shouldSplit = ChapterSplit(areaID, Area.OldSite, levelName, completed, elapsed); break;
@@ -177,8 +179,8 @@ namespace LiveSplit.Celeste {
                     }
                     lastCassettes = cassettes;
                     lastHeartGems = heartGems;
-                    lastAreaID = (int)areaID;
-                    lastAreaDifficulty = (int)areaDifficulty;
+                    lastAreaID = areaID;
+                    lastAreaDifficulty = areaDifficulty;
                 } else if (split == null && Model.CurrentState.Run.Count == 1) {
                     if (levelName == levelStarted && elapsed - levelTimer < 2.5) {
                         levelStarted = lastLevelName;
@@ -217,10 +219,10 @@ namespace LiveSplit.Celeste {
             }
             return !completed && lastCompleted;
         }
-        private bool AreaSplit(SplitInfo split, int currAreaID, int areaIDToCheck, int currAreaDifficulty, int areaDifficultyToCheck) {
+        private bool AreaChangeSplit(SplitInfo split, Area currAreaID, Area areaIDToCheck, AreaMode currAreaDifficulty, AreaMode areaDifficultyToCheck) {
             string[] splitInfo = split.Value.Split('-');
-            return int.TryParse(splitInfo[0].Trim(), out int splitAreaID) && currAreaID != lastAreaID && areaIDToCheck == splitAreaID &&
-                (splitInfo.Length == 1 || (int.TryParse(splitInfo[1].Trim(), out int splitAreaDifficulty) && currAreaDifficulty != lastAreaDifficulty && areaDifficultyToCheck == splitAreaDifficulty));
+            return Enum.TryParse(splitInfo[0].Trim(), out Area splitAreaID) && currAreaID != lastAreaID && areaIDToCheck == splitAreaID &&
+                (splitInfo.Length == 1 || (Enum.TryParse(splitInfo[1].Trim(), out AreaMode splitAreaDifficulty) && currAreaDifficulty != lastAreaDifficulty && areaDifficultyToCheck == splitAreaDifficulty));
         }
         private void HandleSplit(bool shouldSplit, bool shouldReset = false) {
             if (shouldReset) {
