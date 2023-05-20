@@ -37,6 +37,9 @@ namespace LiveSplit.Celeste {
                 Model = new TimerModel() { CurrentState = state };
                 Model.InitializeGameTime();
                 Model.CurrentState.IsGameTimePaused = true;
+                if (settings.SetGameTime) {
+                    Model.CurrentState.CurrentTimingMethod = TimingMethod.GameTime;
+                }
                 state.OnReset += OnReset;
                 state.OnPause += OnPause;
                 state.OnResume += OnResume;
