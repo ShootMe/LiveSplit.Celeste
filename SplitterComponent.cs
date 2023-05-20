@@ -95,9 +95,9 @@ namespace LiveSplit.Celeste {
                     lastShowInputUI = chapterStarted;
                 }
             } else {
-                double elapsed = settings.ILSplits ? mem.LevelTime() : mem.GameTime();
                 bool completed = mem.ChapterCompleted();
                 Area areaID = mem.AreaID();
+                double elapsed = settings.ILSplits ? (areaID == Area.Menu ? lastElapsed : mem.LevelTime()) : mem.GameTime();
                 AreaMode areaDifficulty = mem.AreaDifficulty();
                 int addAmount = settings.Splits.Count > 0 && !settings.ChapterSplits ? 1 : 0;
                 SplitInfo split = currentSplit + addAmount < settings.Splits.Count ? settings.Splits[currentSplit + addAmount] : null;
