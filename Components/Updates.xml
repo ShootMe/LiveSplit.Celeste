@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <updates>
+	<update version="1.4.4">
+		<files>
+			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
+		</files>
+		<changelog>
+			<change> caeyo - Actually fix Area splits on timer start </change>
+		</changelog>
+	</update>
 	<update version="1.4.3">
 		<files>
 			<file path="Components/LiveSplit.Celeste.dll" status="changed"/>
