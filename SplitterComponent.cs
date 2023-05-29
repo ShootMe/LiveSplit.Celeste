@@ -22,8 +22,8 @@ namespace LiveSplit.Celeste {
         private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
         private double lastElapsed, levelTimer;
         private string lastLevelName, levelStarted;
-        private Area lastAreaID;
-        private AreaMode lastAreaDifficulty;
+        private Area lastAreaID = (Area)(-2);
+        private AreaMode lastAreaDifficulty = (AreaMode)(-2);
 
         public SplitterComponent(LiveSplitState state) {
             mem = new SplitterMemory();
@@ -115,7 +115,7 @@ namespace LiveSplit.Celeste {
                         case SplitType.ChapterA: shouldSplit = ChapterSplit(Area.Prologue, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.AreaComplete: shouldSplit = AreaCompleteSplit(split, areaID, levelName, completed, elapsed); break;
                         case SplitType.AreaOnEnter: shouldSplit = AreaChangeSplit(split, areaID, areaID, areaDifficulty, areaDifficulty); break;
-                        case SplitType.AreaOnExit: shouldSplit = AreaChangeSplit(split, areaID, lastAreaID, areaDifficulty, lastAreaDifficulty) && elapsed >= 0.1; break;
+                        case SplitType.AreaOnExit: shouldSplit = AreaChangeSplit(split, areaID, lastAreaID, areaDifficulty, lastAreaDifficulty); break;
                         case SplitType.Prologue: shouldSplit = ChapterSplit(areaID, Area.Prologue, levelName, completed, elapsed); break;
                         case SplitType.Chapter1: shouldSplit = ChapterSplit(areaID, Area.ForsakenCity, levelName, completed, elapsed); break;
                         case SplitType.Chapter2: shouldSplit = ChapterSplit(areaID, Area.OldSite, levelName, completed, elapsed); break;
@@ -333,6 +333,8 @@ namespace LiveSplit.Celeste {
             currentSplit = -1;
             exitingChapter = false;
             autoAdding = false;
+            lastAreaID = (Area)(-2);
+            lastAreaDifficulty = (AreaMode)(-2);
             Model.CurrentState.IsGameTimePaused = true;
             WriteLog("---------Reset----------------------------------");
         }
