@@ -29,6 +29,7 @@
             this.flowOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.chkAutoReset = new System.Windows.Forms.CheckBox();
             this.chkHighPriority = new System.Windows.Forms.CheckBox();
+            this.chkFileTimeOffset = new System.Windows.Forms.CheckBox();
             this.chkGameTime = new System.Windows.Forms.CheckBox();
             this.btnChapterSplits = new System.Windows.Forms.Button();
             this.btnChapterCheckpointSplits = new System.Windows.Forms.Button();
@@ -61,7 +62,7 @@
             this.flowMain.Location = new System.Drawing.Point(0, 0);
             this.flowMain.Margin = new System.Windows.Forms.Padding(0);
             this.flowMain.Name = "flowMain";
-            this.flowMain.Size = new System.Drawing.Size(680, 112);
+            this.flowMain.Size = new System.Drawing.Size(880, 112);
             this.flowMain.TabIndex = 0;
             this.flowMain.WrapContents = false;
             this.flowMain.DragDrop += new System.Windows.Forms.DragEventHandler(this.flowMain_DragDrop);
@@ -74,15 +75,16 @@
             this.flowOptions.Controls.Add(this.btnAddSplit);
             this.flowOptions.Controls.Add(this.chkAutoReset);
             this.flowOptions.Controls.Add(this.chkHighPriority);
+            this.flowOptions.Controls.Add(this.chkFileTimeOffset);
             this.flowOptions.Controls.Add(this.chkGameTime);
             this.flowOptions.Controls.Add(this.btnChapterSplits);
             this.flowOptions.Controls.Add(this.btnChapterCheckpointSplits);
             this.flowOptions.Controls.Add(this.btnABCSides);
             this.flowOptions.Location = new System.Drawing.Point(0, 0);
             this.flowOptions.Margin = new System.Windows.Forms.Padding(0);
-            this.flowOptions.MaximumSize = new System.Drawing.Size(775, 0);
+            this.flowOptions.MaximumSize = new System.Drawing.Size(900, 0);
             this.flowOptions.Name = "flowOptions";
-            this.flowOptions.Size = new System.Drawing.Size(680, 112);
+            this.flowOptions.Size = new System.Drawing.Size(880, 112);
             this.flowOptions.TabIndex = 0;
             // 
             // chkAutoReset
@@ -103,7 +105,7 @@
             this.chkHighPriority.Location = new System.Drawing.Point(330, 6);
             this.chkHighPriority.Margin = new System.Windows.Forms.Padding(6);
             this.chkHighPriority.Name = "chkHighPriority";
-            this.chkHighPriority.Size = new System.Drawing.Size(166, 44);
+            this.chkHighPriority.Size = new System.Drawing.Size(163, 44);
             this.chkHighPriority.TabIndex = 6;
             this.chkHighPriority.TabStop = false;
             this.chkHighPriority.Text = "High Priority";
@@ -111,12 +113,26 @@
             this.chkHighPriority.UseVisualStyleBackColor = true;
             this.chkHighPriority.CheckedChanged += new System.EventHandler(this.ControlChanged);
             // 
+            // chkFileTimeOffset
+            // 
+            this.chkFileTimeOffset.Location = new System.Drawing.Point(505, 6);
+            this.chkFileTimeOffset.Margin = new System.Windows.Forms.Padding(6);
+            this.chkFileTimeOffset.Name = "chkFileTimeOffset";
+            this.chkFileTimeOffset.Size = new System.Drawing.Size(198, 44);
+            this.chkFileTimeOffset.TabIndex = 8;
+            this.chkFileTimeOffset.TabStop = false;
+            this.chkFileTimeOffset.Text = "File Time Offset";
+            this.toolTip1.SetToolTip(this.chkFileTimeOffset, "Use file time, offsetting the timer to start at 0\r\nUseful for running file time s" +
+        "egments without a new save file\r\nNot necessary for full game runs");
+            this.chkFileTimeOffset.UseVisualStyleBackColor = true;
+            this.chkFileTimeOffset.CheckedChanged += new System.EventHandler(this.ControlChanged);
+            // 
             // chkGameTime
             // 
-            this.chkGameTime.Location = new System.Drawing.Point(508, 6);
+            this.chkGameTime.Location = new System.Drawing.Point(715, 6);
             this.chkGameTime.Margin = new System.Windows.Forms.Padding(6);
             this.chkGameTime.Name = "chkGameTime";
-            this.chkGameTime.Size = new System.Drawing.Size(166, 44);
+            this.chkGameTime.Size = new System.Drawing.Size(159, 44);
             this.chkGameTime.TabIndex = 7;
             this.chkGameTime.TabStop = false;
             this.chkGameTime.Text = "Game Time";
@@ -163,6 +179,9 @@
             // toolTip1
             // 
             this.toolTip1.AutomaticDelay = 250;
+            this.toolTip1.AutoPopDelay = 32000;
+            this.toolTip1.InitialDelay = 250;
+            this.toolTip1.ReshowDelay = 50;
             // 
             // SplitterSettings
             // 
@@ -174,7 +193,7 @@
             this.Controls.Add(this.flowMain);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SplitterSettings";
-            this.Size = new System.Drawing.Size(680, 112);
+            this.Size = new System.Drawing.Size(880, 112);
             this.Load += new System.EventHandler(this.Settings_Load);
             this.flowMain.ResumeLayout(false);
             this.flowMain.PerformLayout();
@@ -196,5 +215,6 @@
         private System.Windows.Forms.CheckBox chkHighPriority;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox chkGameTime;
+        private System.Windows.Forms.CheckBox chkFileTimeOffset;
     }
 }

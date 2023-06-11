@@ -8,7 +8,7 @@ using System.Xml;
 namespace LiveSplit.Celeste {
     public partial class SplitterSettings : UserControl {
         public List<SplitInfo> Splits { get; private set; }
-        public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority, SetGameTime;
+        public bool ILSplits, ChapterSplits, AutoReset, SetHighPriority, SetGameTime, FileTimeOffset;
         private bool isLoading;
         public SplitterSettings() {
             isLoading = true;
@@ -20,6 +20,7 @@ namespace LiveSplit.Celeste {
             AutoReset = true;
             SetHighPriority = true;
             SetGameTime = true;
+            FileTimeOffset = false;
 
             isLoading = false;
         }
@@ -49,6 +50,7 @@ namespace LiveSplit.Celeste {
             chkAutoReset.Checked = AutoReset;
             chkHighPriority.Checked = SetHighPriority;
             chkGameTime.Checked = SetGameTime;
+            chkFileTimeOffset.Checked = FileTimeOffset;
             isLoading = false;
             this.flowMain.ResumeLayout(true);
         }
@@ -107,9 +109,17 @@ namespace LiveSplit.Celeste {
             }
             ILSplits = Splits.Count == 0 || (chapterCount <= 1 && heartCount <= 1 && areaCount <= 1 && cassetteCount <= 1);
             ChapterSplits = chapterCount > 0 || heartCount > 0 || areaCount > 0 || cassetteCount > 0;
-            AutoReset = chkAutoReset.Checked;
+
             SetHighPriority = chkHighPriority.Checked;
             SetGameTime = chkGameTime.Checked;
+
+            if (chkAutoReset.Checked && !AutoReset) {
+                chkFileTimeOffset.Checked = false;
+            } else if (chkFileTimeOffset.Checked && !FileTimeOffset) {
+                chkAutoReset.Checked = false;
+            }
+            AutoReset = chkAutoReset.Checked;
+            FileTimeOffset = chkFileTimeOffset.Checked;
         }
         public XmlNode UpdateSettings(XmlDocument document) {
             XmlElement xmlSettings = document.CreateElement("Settings");
@@ -125,6 +135,10 @@ namespace LiveSplit.Celeste {
             XmlElement xmlGameTime = document.CreateElement("SetGameTime");
             xmlGameTime.InnerText = SetGameTime.ToString();
             xmlSettings.AppendChild(xmlGameTime);
+
+            XmlElement xmlFileTimeOffset = document.CreateElement("FileTimeOffset");
+            xmlFileTimeOffset.InnerText = FileTimeOffset.ToString();
+            xmlSettings.AppendChild(xmlFileTimeOffset);
 
             XmlElement xmlSplits = document.CreateElement("Splits");
             xmlSettings.AppendChild(xmlSplits);
@@ -152,6 +166,9 @@ namespace LiveSplit.Celeste {
 
             XmlNode gameTimeNode = settings.SelectSingleNode(".//SetGameTime");
             SetGameTime = !string.IsNullOrEmpty(gameTimeNode?.InnerText) ? bool.Parse(gameTimeNode.InnerText) : true;
+
+            XmlNode fileTimeOffsetNode = settings.SelectSingleNode(".//FileTimeOffset");
+            FileTimeOffset = !string.IsNullOrEmpty(fileTimeOffsetNode?.InnerText) ? bool.Parse(fileTimeOffsetNode.InnerText) : false;
 
             XmlNodeList splitNodes = settings.SelectNodes(".//Splits/Split");
             foreach (XmlNode splitNode in splitNodes) {
