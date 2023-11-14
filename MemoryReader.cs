@@ -205,6 +205,20 @@ namespace LiveSplit.Celeste {
                 return list.ToArray();
             }
         }
+        public static IEnumerable<MemInfo> MemRegions(this Process p) {
+            MemInfo info;
+            IntPtr curAddr = IntPtr.Zero;
+            while (true) {
+                if (WinAPI.VirtualQueryEx(p.Handle, curAddr, out info, Marshal.SizeOf<MemInfo>()) == 0) {
+                    // Check for ERR_INVALID_PARAMETER which means we reached the end of the address space
+                    if (Marshal.GetLastWin32Error() == 0x00000057) yield break;
+                }
+
+                yield return info;
+
+                curAddr = (IntPtr) ((long) info.BaseAddress + (long) info.RegionSize);
+            }
+        }
     }
     internal static class WinAPI {
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -253,6 +267,10 @@ namespace LiveSplit.Celeste {
         public uint State;
         public uint Protect;
         public uint Type;
+
+        public bool IsCommited => (State & 0x1000) != 0;
+        public bool IsGuardPage => (Protect & 0x100) != 0;
+
         public override string ToString() {
             return BaseAddress.ToString("X") + " " + Protect.ToString("X") + " " + State.ToString("X") + " " + Type.ToString("X") + " " + RegionSize.ToString("X");
         }
@@ -261,9 +279,7 @@ namespace LiveSplit.Celeste {
         private const int BUFFER_SIZE = 2097152;
         private List<MemInfo> memoryInfo = new List<MemInfo>();
         private byte[] buffer = new byte[BUFFER_SIZE];
-        public Func<MemInfo, bool> MemoryFilter = delegate (MemInfo info) {
-            return (info.State & 0x1000) != 0 && (info.Protect & 0x100) == 0;
-        };
+        public Func<MemInfo, bool> MemoryFilter = info => info.IsCommited && !info.IsGuardPage;
 
         public int ReadMemory(Process process, int index, int startIndex, out int bytesRead) {
             MemInfo info = memoryInfo[index];
