@@ -27,13 +27,13 @@ namespace LiveSplit.Celeste {
 	public class SplitterComponent {
 		private static string LOGFILE = "_Celeste.log";
 		private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
-		private SplitterMemory mem;
+		private ISplitterMemory mem;
 		private SplitterSettings settings;
 		private int currentSplit = -1, lastLogCheck;
 		private bool hasLog = false;
 
 		public SplitterComponent(object model) {
-			mem = new SplitterMemory();
+			mem = new SplitterMemoryDispatch();
 			settings = new SplitterSettings();
 			foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
 				currentValues[key] = "";

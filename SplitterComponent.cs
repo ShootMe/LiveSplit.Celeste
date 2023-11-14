@@ -16,17 +16,17 @@ namespace LiveSplit.Celeste {
         public IDictionary<string, Action> ContextMenuControls { get; protected set; }
         private static string LOGFILE = "_Celeste.txt";
         private Dictionary<LogObject, string> currentValues = new Dictionary<LogObject, string>();
-        private SplitterMemory mem;
+        private ISplitterMemory mem;
         private SplitterSettings settings;
         private int currentSplit = -1, lastLogCheck, lastHeartGems, lastCassettes;
-        private bool hasLog = false, lastShowInputUI, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
+        private bool hasLog = false, lastChapterStarted, lastCompleted, exitingChapter, autoAdding, autoAddingExit;
         private double lastElapsed, levelTimer, elapsedOffset;
         private string lastLevelName, levelStarted;
         private Area lastAreaID = (Area)(-2);
         private AreaMode lastAreaDifficulty = (AreaMode)(-2);
 
         public SplitterComponent(LiveSplitState state) {
-            mem = new SplitterMemory();
+            mem = new SplitterMemoryDispatch();
             settings = new SplitterSettings();
 
             foreach (LogObject key in Enum.GetValues(typeof(LogObject))) {
@@ -82,17 +82,13 @@ namespace LiveSplit.Celeste {
                     }
                     lastLevelName = levelName;
                 } else if (!settings.ILSplits) {
-                    bool showInputUI = mem.ShowInputUI();
-
-                    shouldSplit = !showInputUI && lastShowInputUI && mem.EnteringFirstChapter();
-
-                    lastShowInputUI = showInputUI;
+                    shouldSplit = mem.StartingNewFile();
                 } else {
                     bool chapterStarted = mem.ChapterStarted();
 
-                    shouldSplit = chapterStarted && !lastShowInputUI && DateTime.Now > mem.LastHooked.AddSeconds(3);
+                    shouldSplit = chapterStarted && !lastChapterStarted && DateTime.Now > mem.LastHooked.AddSeconds(3);
 
-                    lastShowInputUI = chapterStarted;
+                    lastChapterStarted = chapterStarted;
                 }
             } else {
                 bool completed = mem.ChapterCompleted();
@@ -296,8 +292,7 @@ namespace LiveSplit.Celeste {
                         case LogObject.CelesteFieldOffs: curr = mem.CelesteFieldOffs().ToString("X"); break;
                         case LogObject.GameTime: curr = mem.GameTime().ToString("0"); break;
                         case LogObject.LevelTime: curr = mem.LevelTime().ToString("0"); break;
-                        case LogObject.ShowInputUI: curr = mem.ShowInputUI().ToString(); break;
-                        case LogObject.EnteringFirstChapter: curr = mem.EnteringFirstChapter().ToString(); break;
+                        case LogObject.StartingNewFile: curr = mem.StartingNewFile().ToString(); break;
                         case LogObject.Started: curr = mem.ChapterStarted().ToString(); break;
                         case LogObject.Completed: curr = mem.ChapterCompleted().ToString(); break;
                         case LogObject.AreaID: curr = mem.AreaID().ToString(); break;

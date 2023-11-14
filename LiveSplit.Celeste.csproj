@@ -62,6 +62,8 @@
     <Compile Include="SplitterComponent.cs" />
     <Compile Include="SplitterFactory.cs" />
     <Compile Include="SplitterMemory.cs" />
+    <Compile Include="SplitterMemory.Vanilla.cs" />
+    <Compile Include="SplitterMemory.Core.cs" />
     <Compile Include="SplitterObjects.cs" />
     <Compile Include="SplitterSettings.cs">
       <SubType>UserControl</SubType>
